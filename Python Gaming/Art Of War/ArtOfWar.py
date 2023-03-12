@@ -341,6 +341,8 @@ while running:
             if P1_Jump_Height == JUMP_HEIGHT:
                 P1_Descending = True
         else:
+            if P1_jump_frame > 0:
+                P1_jump_frame -= 1
             player1_y += PLAYER_SPEED
             P1_Jump_Height -= PLAYER_SPEED
 
@@ -348,6 +350,7 @@ while running:
                 P1_Descending = False
                 P1_Jumping = False
                 P1_Standing = True
+                P1_jump_frame = 0
 
     ## Jumping and Descending for Player 2
     if P2_Jumping == True:
@@ -363,6 +366,8 @@ while running:
             if P2_Jump_Height == JUMP_HEIGHT:
                 P2_Descending = True
         else:
+            if P2_jump_frame > 0:
+                P2_jump_frame -= 1
             player2_y += PLAYER_SPEED
             P2_Jump_Height -= PLAYER_SPEED
 
@@ -370,6 +375,7 @@ while running:
                 P2_Descending = False
                 P2_Jumping = False
                 P2_Standing = True
+                P2_jump_frame = 0
 
 
     tick += 1
