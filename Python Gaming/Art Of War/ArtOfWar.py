@@ -111,7 +111,6 @@ class GameSprite:
             screen.blit(IGS, location)
 
 ###################################################################################################
-
 """
   ██████╗  █████╗ ███╗   ███╗███████╗                                
  ██╔════╝ ██╔══██╗████╗ ████║██╔════╝                                
@@ -207,6 +206,32 @@ tick = 0
 ###################################################################################################
 
 """
+  ██████╗ ██████╗ ██╗     ██╗     ██╗███████╗██╗ ██████╗ ███╗   ██╗
+ ██╔════╝██╔═══██╗██║     ██║     ██║██╔════╝██║██╔═══██╗████╗  ██║
+ ██║     ██║   ██║██║     ██║     ██║███████╗██║██║   ██║██╔██╗ ██║
+ ██║     ██║   ██║██║     ██║     ██║╚════██║██║██║   ██║██║╚██╗██║
+ ╚██████╗╚██████╔╝███████╗███████╗██║███████║██║╚██████╔╝██║ ╚████║
+  ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝
+                                                                   
+  ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗                          
+ ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝                          
+ ██║     ███████║█████╗  ██║     █████╔╝                           
+ ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗                           
+ ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗                          
+  ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝                          
+"""
+
+def checkForHorizontalCollisions(currentX):
+    if currentX <= 10:
+        return True
+    elif currentX >= (screenWidth - 225):
+        return True
+    else:
+        return False
+
+###################################################################################################
+
+"""
   ██████╗  █████╗ ███╗   ███╗███████╗    ██╗      ██████╗  ██████╗ ██████╗ 
  ██╔════╝ ██╔══██╗████╗ ████║██╔════╝    ██║     ██╔═══██╗██╔═══██╗██╔══██╗
  ██║  ███╗███████║██╔████╔██║█████╗      ██║     ██║   ██║██║   ██║██████╔╝
@@ -231,9 +256,13 @@ while running:
 
     # Move the players
     if keys[pygame.K_a]:
-        player1_x -= PLAYER_SPEED
+        P1_Collision = checkForHorizontalCollisions(player1_x - PLAYER_SPEED)
+        if P1_Collision == False:
+            player1_x -= PLAYER_SPEED
     if keys[pygame.K_d]:
-        player1_x += PLAYER_SPEED
+        P1_Collision = checkForHorizontalCollisions(player1_x + PLAYER_SPEED)
+        if P1_Collision == False:
+            player1_x += PLAYER_SPEED
     if keys[pygame.K_w]:
         if P1_Standing == True:
             P1_Jumping = True
@@ -244,9 +273,13 @@ while running:
         # player1_y += PLAYER_SPEED
 
     if keys[pygame.K_LEFT]:
-        player2_x -= PLAYER_SPEED
+        P2_Collision = checkForHorizontalCollisions(player2_x - PLAYER_SPEED)
+        if P2_Collision == False:
+            player2_x -= PLAYER_SPEED
     if keys[pygame.K_RIGHT]:
-        player2_x += PLAYER_SPEED
+        P2_Collision = checkForHorizontalCollisions(player2_x + PLAYER_SPEED)
+        if P2_Collision == False:
+            player2_x += PLAYER_SPEED
     if keys[pygame.K_UP]:
         if P2_Standing == True:
             P2_Jumping = True
@@ -266,7 +299,7 @@ while running:
     font = pygame.font.SysFont('Algerian',75)
     text = font.render("Art of War", 1,(255,255,255))
 
-    screen.blit(text, (750,50))
+    screen.blit(text, (700,50))
 
     if tick % 2 == 0:
         if P1_idle_frame < P1_idle_frameCount - 1:
@@ -328,4 +361,3 @@ while running:
     pygame.display.update()
 
 ###################################################################################################
-
