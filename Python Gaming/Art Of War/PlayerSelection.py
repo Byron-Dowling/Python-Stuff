@@ -69,6 +69,8 @@ class PlayerSelector:
             characterSprite["Action"]["Idle"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Idle"]["imagePath"]))
             characterSprite["Action"]["Move"]["imagePath"] = fr'Sprites\{self.characters[i]}\Move'
             characterSprite["Action"]["Move"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Move"]["imagePath"]))
+            characterSprite["Action"]["Jump"]["imagePath"] = fr'Sprites\{self.characters[i]}\Jump'
+            characterSprite["Action"]["Jump"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Jump"]["imagePath"]))
 
             self.characterSprites.append(copy.deepcopy(characterSprite))
 

@@ -157,11 +157,15 @@ P1 = sprites[0]
 P2 = sprites[1]
 
 P1_idle_frameCount = P1["Action"]["Idle"]["frameCount"]
+P1_jump_frameCount = P1["Action"]["Jump"]["frameCount"]
 P1_idle_frame = 0
+P1_jump_frame = 0
 P1_name = P1["Screen Name"]
 
 P2_idle_frameCount = P2["Action"]["Idle"]["frameCount"]
-P2_idle_frame = 0
+P2_jump_frameCount = P2["Action"]["Jump"]["frameCount"]
+P2_idle_frame = 2
+P2_jump_frame = 0
 P2_name = P2["Screen Name"]
 
 pp = pprint.PrettyPrinter(depth=4)
@@ -314,16 +318,23 @@ while running:
 
 
     ## Spawn player sprites
-    P1_link = f'{P1["Action"]["Idle"]["imagePath"]}\{P1_idle_frame}.png'
-    Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
+    if P1_Standing == True:
+        P1_link = f'{P1["Action"]["Idle"]["imagePath"]}\{P1_idle_frame}.png'
+        Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
 
-    P2_link = f'{P2["Action"]["Idle"]["imagePath"]}\{P2_idle_frame}.png'
-    Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
+    if P2_Standing == True:
+        P2_link = f'{P2["Action"]["Idle"]["imagePath"]}\{P2_idle_frame}.png'
+        Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
 
 
     ## Jumping and Descending for Player 1
     if P1_Jumping == True:
+        P1_link = f'{P1["Action"]["Jump"]["imagePath"]}\{P1_jump_frame}.png'
+        Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
+
         if P1_Descending == False:
+            if P1_jump_frame < P1_jump_frameCount -1:
+                P1_jump_frame += 1
             player1_y -= VERTICAL_SPEED
             P1_Jump_Height += VERTICAL_SPEED
 
@@ -340,7 +351,12 @@ while running:
 
     ## Jumping and Descending for Player 2
     if P2_Jumping == True:
+        P2_link = f'{P2["Action"]["Jump"]["imagePath"]}\{P2_jump_frame}.png'
+        Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
+
         if P2_Descending == False:
+            if P2_jump_frame < P2_jump_frameCount -1:
+                P2_jump_frame += 1
             player2_y -= VERTICAL_SPEED
             P2_Jump_Height += VERTICAL_SPEED
 
