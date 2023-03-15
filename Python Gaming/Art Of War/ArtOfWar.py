@@ -57,7 +57,7 @@ class Background(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)  # call Sprite initializer
         self.width, self.height = self.getImgWidthHeight(image_file)
         self.image = pygame.image.load(image_file)
-        self.image = pygame.transform.scale(self.image, (2038, 862))
+        self.image = pygame.transform.scale(self.image, (1400, 700))
 
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
@@ -134,8 +134,8 @@ pygame.font.init()
 running = True
 
 ## Rough Dimensions of Byron's Monitor
-screenWidth = 1750
-screenHeight = 800
+screenWidth = 1400
+screenHeight = 700
 
 ## Set the size of the window using the above dimensions
 size = (screenWidth, screenHeight)
@@ -176,8 +176,8 @@ pp.pprint(sprites)
 
 
 ## Default Player Variables to get ball rolling
-Player1_StartingPosition = (350,500)
-Player2_StartingPosition = (1350,500)
+Player1_StartingPosition = (80,300)
+Player2_StartingPosition = (1100,300)
 Default_Smoothscale_Dimensions = (250,250)
 
 ## Movement Variables
@@ -303,9 +303,9 @@ while running:
     font = pygame.font.SysFont('Algerian',75)
     text = font.render("Art of War", 1,(255,255,255))
 
-    screen.blit(text, (700,50))
+    screen.blit(text, (500,20))
 
-    if tick % 2 == 0:
+    if tick % 4 == 0:
         if P1_idle_frame < P1_idle_frameCount - 1:
             P1_idle_frame += 1
         else:
@@ -319,17 +319,17 @@ while running:
 
     ## Spawn player sprites
     if P1_Standing == True:
-        P1_link = f'{P1["Action"]["Idle"]["imagePath"]}\{P1_idle_frame}.png'
+        P1_link = f'{P1["Action"]["Idle"]["imagePath"]}/{P1_idle_frame}.png'
         Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
 
     if P2_Standing == True:
-        P2_link = f'{P2["Action"]["Idle"]["imagePath"]}\{P2_idle_frame}.png'
+        P2_link = f'{P2["Action"]["Idle"]["imagePath"]}/{P2_idle_frame}.png'
         Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
 
 
     ## Jumping and Descending for Player 1
     if P1_Jumping == True:
-        P1_link = f'{P1["Action"]["Jump"]["imagePath"]}\{P1_jump_frame}.png'
+        P1_link = f'{P1["Action"]["Jump"]["imagePath"]}/{P1_jump_frame}.png'
         Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
 
         if P1_Descending == False:
@@ -354,7 +354,7 @@ while running:
 
     ## Jumping and Descending for Player 2
     if P2_Jumping == True:
-        P2_link = f'{P2["Action"]["Jump"]["imagePath"]}\{P2_jump_frame}.png'
+        P2_link = f'{P2["Action"]["Jump"]["imagePath"]}/{P2_jump_frame}.png'
         Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
 
         if P2_Descending == False:
