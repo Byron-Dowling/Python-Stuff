@@ -6,20 +6,20 @@
 
         - Viking Sprites:
             - Author: [Ragewortt]
-            - https://ragewortt.itch.io/fantasy-heroes-vikings-sprite-sheet
+            - https:\\ragewortt.itch.io\fantasy-heroes-vikings-sprite-sheet
 
         - Pirate Sprites:
             - Author: [Free Game Assets]
-            - https://free-game-assets.itch.io/free-2d-pirate-sprites
+            - https:\\free-game-assets.itch.io\free-2d-pirate-sprites
 
         - Knight Sprites:
             - Author: [Free Game Assets]
-            - https://free-game-assets.itch.io/free-2d-knight-sprite-sheets
+            - https:\\free-game-assets.itch.io\free-2d-knight-sprite-sheets
 
         Background Art:
             - [Author] "klyaksun"
-            - https://www.vecteezy.com/vector-art/15370321-ancient-roman-arena-for-gladiators-fight
-            - https://www.vecteezy.com/vector-art/13852032-ancient-roman-arena-for-gladiators-fight-at-night
+            - https:\\www.vecteezy.com\vector-art\15370321-ancient-roman-arena-for-gladiators-fight
+            - https:\\www.vecteezy.com\vector-art\13852032-ancient-roman-arena-for-gladiators-fight-at-night
 
 """
 
@@ -196,8 +196,6 @@ PLAYER_SPEED = 10
 VERTICAL_SPEED = 15
 JUMP_HEIGHT = 150
 
-PROJECTILE_VELOCITY = 75
-
 player1_x = Player1_StartingPosition[0]
 player1_y = Player1_StartingPosition[1]
 player2_x = Player2_StartingPosition[0]
@@ -239,6 +237,7 @@ tick = 0
   ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝                          
 """
 
+            
 def checkForHorizontalCollisions(currentX):
     if currentX <= 10:
         return True
@@ -284,7 +283,7 @@ while running:
     if keys[pygame.K_w]:
         if P1_Standing == True:
             pygame.mixer.Channel(0).set_volume(0.05)
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds/sword-hit-in-battle.wav'))
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
             P1_Jumping = True
             P1_Standing = False
     
@@ -303,7 +302,7 @@ while running:
     if keys[pygame.K_UP]:
         if P2_Standing == True:
             pygame.mixer.Channel(0).set_volume(0.05)
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds/sword-hit-in-battle.wav'))
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
             P2_Jumping = True
             P2_Standing = False
             
@@ -321,10 +320,10 @@ while running:
     ## Layering background image of map imagery
     screen.blit(BackGround.image, BackGround.rect)
 
-    font = pygame.font.SysFont('Algerian',75)
+    font = pygame.font.SysFont('Algerian',70)
     text = font.render("Art of War", 1,(255,255,255))
 
-    screen.blit(text, (screenWidth/3,20))
+    screen.blit(text, (500,20))
 
     if tick % 4 == 0:
         if P1_idle_frame < P1_idle_frameCount - 1:
@@ -340,17 +339,17 @@ while running:
 
     ## Spawn player sprites
     if P1_Standing == True:
-        P1_link = f'{P1["Action"]["Idle"]["imagePath"]}/{P1_idle_frame}.png'
+        P1_link = f'{P1["Action"]["Idle"]["imagePath"]}\{P1_idle_frame}.png'
         Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
 
     if P2_Standing == True:
-        P2_link = f'{P2["Action"]["Idle"]["imagePath"]}/{P2_idle_frame}.png'
+        P2_link = f'{P2["Action"]["Idle"]["imagePath"]}\{P2_idle_frame}.png'
         Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
 
 
     ## Jumping and Descending for Player 1
     if P1_Jumping == True:
-        P1_link = f'{P1["Action"]["Jump"]["imagePath"]}/{P1_jump_frame}.png'
+        P1_link = f'{P1["Action"]["Jump"]["imagePath"]}\{P1_jump_frame}.png'
         Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
         
         if P1_Descending == False:
@@ -376,7 +375,7 @@ while running:
 
     ## Jumping and Descending for Player 2
     if P2_Jumping == True:
-        P2_link = f'{P2["Action"]["Jump"]["imagePath"]}/{P2_jump_frame}.png'
+        P2_link = f'{P2["Action"]["Jump"]["imagePath"]}\{P2_jump_frame}.png'
         Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
 
         if P2_Descending == False:

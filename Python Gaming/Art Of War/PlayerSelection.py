@@ -61,15 +61,15 @@ class PlayerSelector:
         for i in range(len(self.characters)):
             characterSprite["Name"] = self.characters[i]
             characterSprite["Screen Name"] = self.warriorNames[i]
-            characterSprite["Action"]["Attack"]["imagePath"] = fr'Sprites/{self.characters[i]}/Attack'
+            characterSprite["Action"]["Attack"]["imagePath"] = fr'Sprites\{self.characters[i]}\Attack'
             characterSprite["Action"]["Attack"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Attack"]["imagePath"]))
-            characterSprite["Action"]["Die"]["imagePath"] = fr'Sprites/{self.characters[i]}/Die'
+            characterSprite["Action"]["Die"]["imagePath"] = fr'Sprites\{self.characters[i]}\Die'
             characterSprite["Action"]["Die"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Die"]["imagePath"]))
-            characterSprite["Action"]["Idle"]["imagePath"] = fr'Sprites/{self.characters[i]}/Idle'
+            characterSprite["Action"]["Idle"]["imagePath"] = fr'Sprites\{self.characters[i]}\Idle'
             characterSprite["Action"]["Idle"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Idle"]["imagePath"]))
-            characterSprite["Action"]["Move"]["imagePath"] = fr'Sprites/{self.characters[i]}/Move'
+            characterSprite["Action"]["Move"]["imagePath"] = fr'Sprites\{self.characters[i]}\Move'
             characterSprite["Action"]["Move"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Move"]["imagePath"]))
-            characterSprite["Action"]["Jump"]["imagePath"] = fr'Sprites/{self.characters[i]}/Jump'
+            characterSprite["Action"]["Jump"]["imagePath"] = fr'Sprites\{self.characters[i]}\Jump'
             characterSprite["Action"]["Jump"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Jump"]["imagePath"]))
 
             self.characterSprites.append(copy.deepcopy(characterSprite))
