@@ -28,6 +28,7 @@ import pprint
 import os
 from PlayerSelection import PlayerSelector
 from PIL import Image, ImageDraw
+import utilities
 
 
 ###################################################################################################
@@ -130,7 +131,8 @@ class GameSprite:
 ## Initialize Pygame
 pygame.init()
 pygame.font.init()
-
+pygame.mixer.init()
+utilities.background_music()
 running = True
 
 ## Rough Dimensions of Byron's Monitor
@@ -269,6 +271,8 @@ while running:
             player1_x += PLAYER_SPEED
     if keys[pygame.K_w]:
         if P1_Standing == True:
+            pygame.mixer.Channel(0).set_volume(0.05)
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds/sword-hit-in-battle.wav'))
             P1_Jumping = True
             P1_Standing = False
     
@@ -286,6 +290,8 @@ while running:
             player2_x += PLAYER_SPEED
     if keys[pygame.K_UP]:
         if P2_Standing == True:
+            pygame.mixer.Channel(0).set_volume(0.05)
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds/sword-hit-in-battle.wav'))
             P2_Jumping = True
             P2_Standing = False
             
@@ -331,7 +337,7 @@ while running:
     if P1_Jumping == True:
         P1_link = f'{P1["Action"]["Jump"]["imagePath"]}/{P1_jump_frame}.png'
         Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
-
+        
         if P1_Descending == False:
             if P1_jump_frame < P1_jump_frameCount -1:
                 P1_jump_frame += 1
