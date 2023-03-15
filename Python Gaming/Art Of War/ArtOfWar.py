@@ -53,12 +53,12 @@ import utilities
 """
 
 class Background(pygame.sprite.Sprite):
-    def __init__(self, image_file, location):
+    def __init__(self, image_file, location, size):
 
         pygame.sprite.Sprite.__init__(self)  # call Sprite initializer
         self.width, self.height = self.getImgWidthHeight(image_file)
         self.image = pygame.image.load(image_file)
-        self.image = pygame.transform.scale(self.image, (1400, 700))
+        self.image = pygame.transform.scale(self.image, size)
 
         self.rect = self.image.get_rect()
         self.rect.left, self.rect.top = location
@@ -76,7 +76,6 @@ class Background(pygame.sprite.Sprite):
 
 
 ###################################################################################################
-
 """
  
   ██████╗  █████╗ ███╗   ███╗███████╗        
@@ -136,8 +135,12 @@ utilities.background_music()
 running = True
 
 ## Rough Dimensions of Byron's Monitor
-screenWidth = 1400
-screenHeight = 700
+screenWidth = 1750
+screenHeight = 800
+
+## Alternative smaller setup
+# screenWidth = 1400
+# screenHeight = 700
 
 ## Set the size of the window using the above dimensions
 size = (screenWidth, screenHeight)
@@ -145,7 +148,7 @@ screen = pygame.display.set_mode(size)
 
 ## Setting the background image and orienting starting from (0,0) origin i.e top left corner
 # BackGround = Background("Arena.jpg", [0, 0])
-BackGround = Background("Arena_Night.jpg", [0, 0])
+BackGround = Background("Arena_Night.jpg", [0, 0], (screenWidth, screenHeight))
 
 
 """
@@ -176,16 +179,24 @@ pp.pprint(sprites)
 ## Get System Font Info
 # pp.pprint(pygame.font.get_fonts())
 
+## Default Player Variables to get ball rolling
+## Smaller Dimension settings
+# Player1_StartingPosition = (80,300)
+# Player2_StartingPosition = (1100,300)
+# Default_Smoothscale_Dimensions = (250,250)
 
 ## Default Player Variables to get ball rolling
-Player1_StartingPosition = (80,300)
-Player2_StartingPosition = (1100,300)
+Player1_StartingPosition = (350,500)
+Player2_StartingPosition = (1350,500)
 Default_Smoothscale_Dimensions = (250,250)
+Project_Smoothscale_Dimensions = (150,50)
 
 ## Movement Variables
 PLAYER_SPEED = 10
 VERTICAL_SPEED = 15
 JUMP_HEIGHT = 150
+
+PROJECTILE_VELOCITY = 75
 
 player1_x = Player1_StartingPosition[0]
 player1_y = Player1_StartingPosition[1]
@@ -200,6 +211,7 @@ P1_Jump_Height = 0
 P2_Standing = True
 P2_Jumping = False
 P2_Descending = False
+P2_Projectile = False
 P2_Jump_Height = 0
 
 
@@ -296,8 +308,11 @@ while running:
             P2_Standing = False
             
     if keys[pygame.K_DOWN]:
-        pass
-        # player2_y += PLAYER_SPEED
+        if P2_Projectile == False:
+            P2_Projectile = True
+            P2_Spear_X = player2_x
+            P2_Spear_Y = player2_y
+            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Project_Smoothscale_Dimensions, False)
         
 
     ## "I want you to paint it, paint it, paint it black"
@@ -309,7 +324,7 @@ while running:
     font = pygame.font.SysFont('Algerian',75)
     text = font.render("Art of War", 1,(255,255,255))
 
-    screen.blit(text, (500,20))
+    screen.blit(text, (screenWidth/3,20))
 
     if tick % 4 == 0:
         if P1_idle_frame < P1_idle_frameCount - 1:
@@ -358,6 +373,7 @@ while running:
                 P1_Standing = True
                 P1_jump_frame = 0
 
+
     ## Jumping and Descending for Player 2
     if P2_Jumping == True:
         P2_link = f'{P2["Action"]["Jump"]["imagePath"]}/{P2_jump_frame}.png'
@@ -383,6 +399,16 @@ while running:
                 P2_Standing = True
                 P2_jump_frame = 0
 
+
+    ## Animation of Player 2's projectiles
+    if P2_Projectile == True:
+        P2_Spear_X -= PROJECTILE_VELOCITY
+        P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
+        
+        if P2_Collision == False:
+            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Project_Smoothscale_Dimensions, False)
+        else:
+            P2_Projectile = False
 
     tick += 1
 
