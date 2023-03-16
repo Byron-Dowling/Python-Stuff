@@ -187,8 +187,8 @@ pp.pprint(sprites)
 # Default_Smoothscale_Dimensions = (250,250)
 
 ## Default Player Variables to get ball rolling
-Player1_StartingPosition = (350,500)
-Player2_StartingPosition = (1350,500)
+Player1_StartingPosition = (285,400)
+Player2_StartingPosition = (1250,400)
 Default_Smoothscale_Dimensions = (250,250)
 Projectile_Smoothscale_Dimensions = (150,50)
 
@@ -196,7 +196,7 @@ Projectile_Smoothscale_Dimensions = (150,50)
 PLAYER_SPEED = 10
 VERTICAL_SPEED = 15
 JUMP_HEIGHT = 150
-PROJECTILE_VELOCITY = 75
+PROJECTILE_VELOCITY = 15
 
 player1_x = Player1_StartingPosition[0]
 player1_y = Player1_StartingPosition[1]
@@ -217,7 +217,7 @@ P2_Jump_Height = 0
 
 
 ## Set the title of the window
-banner = f'Get Ready for Deadliest Warrior! {P1_name} vs {P2_name}'
+banner = f'Get Ready for Battle! {P1_name} vs {P2_name}'
 pygame.display.set_caption(banner)
 
 tick = 0
@@ -330,9 +330,22 @@ while running:
     font = pygame.font.SysFont('Algerian',70)
     text = font.render("Art of War", 1,(255,255,255))
 
-    screen.blit(text, (screenWidth/3,20))
+    screen.blit(text, (screenWidth/2.5,90))
+    
+    player2_health = 10
+    player1_health = 10
+    Health_font = pygame.font.SysFont('Algerian', 40)
+    right_health_text = Health_font.render(
+            "Health: " + str(player2_health), 1, (255,255,255))
+    left_health_text = Health_font.render(
+            "Health: " + str(player1_health), 1, (255,255,255))
+    screen.blit(right_health_text, (screenWidth - right_health_text.get_width() - 40, 10))
+    screen.blit(left_health_text, (40, 10))
+    
+    # add some kind of if statement when collision detected to subtract something from the health of each plater
+    
 
-    if tick % 2 == 0:
+    if tick % 3 == 0:
         if P1_idle_frame < P1_idle_frameCount - 1:
             P1_idle_frame += 1
         else:
