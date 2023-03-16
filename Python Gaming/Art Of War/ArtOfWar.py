@@ -189,12 +189,13 @@ pp.pprint(sprites)
 Player1_StartingPosition = (350,500)
 Player2_StartingPosition = (1350,500)
 Default_Smoothscale_Dimensions = (250,250)
-Project_Smoothscale_Dimensions = (150,50)
+Projectile_Smoothscale_Dimensions = (150,50)
 
 ## Movement Variables
 PLAYER_SPEED = 10
 VERTICAL_SPEED = 15
 JUMP_HEIGHT = 150
+PROJECTILE_VELOCITY = 75
 
 player1_x = Player1_StartingPosition[0]
 player1_y = Player1_StartingPosition[1]
@@ -204,6 +205,7 @@ player2_y = Player2_StartingPosition[1]
 P1_Standing = True
 P1_Jumping = False
 P1_Descending = False
+P1_Projectile = False
 P1_Jump_Height = 0
 
 P2_Standing = True
@@ -271,7 +273,7 @@ while running:
     # Get the pressed keys
     keys = pygame.key.get_pressed()
 
-    # Move the players
+    # Move Player 1
     if keys[pygame.K_a]:
         P1_Collision = checkForHorizontalCollisions(player1_x - PLAYER_SPEED)
         if P1_Collision == False:
@@ -287,10 +289,14 @@ while running:
             P1_Jumping = True
             P1_Standing = False
     
-    if keys[pygame.K_s]:
-        pass
-        # player1_y += PLAYER_SPEED
+    if keys[pygame.K_LSHIFT]:
+        if P1_Projectile == False:
+            P1_Projectile = True
+            P1_Spear_X = player1_x
+            P1_Spear_Y = player1_y
+            P1_Spear = GameSprite('Projectiles\spear_LTR.png', (P1_Spear_X, P1_Spear_Y), Projectile_Smoothscale_Dimensions, False)
 
+    # Move Player 2
     if keys[pygame.K_LEFT]:
         P2_Collision = checkForHorizontalCollisions(player2_x - PLAYER_SPEED)
         if P2_Collision == False:
@@ -306,12 +312,12 @@ while running:
             P2_Jumping = True
             P2_Standing = False
             
-    if keys[pygame.K_DOWN]:
+    if keys[pygame.K_RSHIFT]:
         if P2_Projectile == False:
             P2_Projectile = True
             P2_Spear_X = player2_x
             P2_Spear_Y = player2_y
-            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Project_Smoothscale_Dimensions, False)
+            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Projectile_Smoothscale_Dimensions, False)
         
 
     ## "I want you to paint it, paint it, paint it black"
@@ -323,9 +329,9 @@ while running:
     font = pygame.font.SysFont('Algerian',70)
     text = font.render("Art of War", 1,(255,255,255))
 
-    screen.blit(text, (500,20))
+    screen.blit(text, (screenWidth/3,20))
 
-    if tick % 4 == 0:
+    if tick % 3 == 0:
         if P1_idle_frame < P1_idle_frameCount - 1:
             P1_idle_frame += 1
         else:
@@ -399,13 +405,23 @@ while running:
                 P2_jump_frame = 0
 
 
+    ## Animation of Player 1's projectiles
+    if P1_Projectile == True:
+        P1_Spear_X += PROJECTILE_VELOCITY
+        P1_Collision = checkForHorizontalCollisions(P1_Spear_X)
+        
+        if P1_Collision == False:
+            P1_Spear = GameSprite('Projectiles\spear_LTR.png', (P1_Spear_X, P1_Spear_Y), Projectile_Smoothscale_Dimensions, False)
+        else:
+            P1_Projectile = False
+
     ## Animation of Player 2's projectiles
     if P2_Projectile == True:
         P2_Spear_X -= PROJECTILE_VELOCITY
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
         
         if P2_Collision == False:
-            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Project_Smoothscale_Dimensions, False)
+            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Projectile_Smoothscale_Dimensions, False)
         else:
             P2_Projectile = False
 
