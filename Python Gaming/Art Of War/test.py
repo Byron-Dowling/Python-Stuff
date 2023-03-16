@@ -77,8 +77,8 @@ class Background(pygame.sprite.Sprite):
 
 
 ###################################################################################################
+
 """
- 
   ██████╗  █████╗ ███╗   ███╗███████╗        
  ██╔════╝ ██╔══██╗████╗ ████║██╔════╝        
  ██║  ███╗███████║██╔████╔██║█████╗          
@@ -112,26 +112,20 @@ class GameSprite:
             screen.blit(IGS, location)
 
 ###################################################################################################
-"""
-  ██████╗  █████╗ ███╗   ███╗███████╗                                
- ██╔════╝ ██╔══██╗████╗ ████║██╔════╝                                
- ██║  ███╗███████║██╔████╔██║█████╗                                  
- ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝                                  
- ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗                                
-  ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝                                
-                                                                     
- ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
- ██║   ██║██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
- ██║   ██║███████║██████╔╝██║███████║██████╔╝██║     █████╗  ███████╗
- ╚██╗ ██╔╝██╔══██║██╔══██╗██║██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
-  ╚████╔╝ ██║  ██║██║  ██║██║██║  ██║██████╔╝███████╗███████╗███████║
-   ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝                                                                   
- """
 
-## Trying to convert a lot of these game variables and player variables into a driver class
+"""
+ ██████╗ ██╗      █████╗ ██╗   ██╗███████╗██████╗ 
+ ██╔══██╗██║     ██╔══██╗╚██╗ ██╔╝██╔════╝██╔══██╗
+ ██████╔╝██║     ███████║ ╚████╔╝ █████╗  ██████╔╝
+ ██╔═══╝ ██║     ██╔══██║  ╚██╔╝  ██╔══╝  ██╔══██╗
+ ██║     ███████╗██║  ██║   ██║   ███████╗██║  ██║
+ ╚═╝     ╚══════╝╚═╝  ╚═╝   ╚═╝   ╚══════╝╚═╝  ╚═╝
+                                                  
+"""
 class Player:
     def __init__(self, SP, P):
         self.StartingPosition = SP
+        self.spriteObject = P
         self.player_X = SP[0]
         self.player_Y = SP[1]
         self.Standing = True
@@ -145,8 +139,24 @@ class Player:
         self.jump_frame = 0
         self.name = P["Screen Name"]
 
+###################################################################################################
 
-
+""" 
+  ██████╗  █████╗ ███╗   ███╗███████╗                                                 
+ ██╔════╝ ██╔══██╗████╗ ████║██╔════╝                                                 
+ ██║  ███╗███████║██╔████╔██║█████╗                                                   
+ ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝                                                   
+ ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗                                                 
+  ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝                                                 
+                                                                                      
+  ██████╗ ██████╗ ███╗   ██╗████████╗██████╗  ██████╗ ██╗     ██╗     ███████╗██████╗ 
+ ██╔════╝██╔═══██╗████╗  ██║╚══██╔══╝██╔══██╗██╔═══██╗██║     ██║     ██╔════╝██╔══██╗
+ ██║     ██║   ██║██╔██╗ ██║   ██║   ██████╔╝██║   ██║██║     ██║     █████╗  ██████╔╝
+ ██║     ██║   ██║██║╚██╗██║   ██║   ██╔══██╗██║   ██║██║     ██║     ██╔══╝  ██╔══██╗
+ ╚██████╗╚██████╔╝██║ ╚████║   ██║   ██║  ██║╚██████╔╝███████╗███████╗███████╗██║  ██║
+  ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝   ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚══════╝╚══════╝╚═╝  ╚═╝
+                                                                                      
+"""
 class GameController:
     def __init__(self, width, height):
         self.Running = True
@@ -178,6 +188,22 @@ class GameController:
 
 ###################################################################################################
 
+"""
+  ██████╗  █████╗ ███╗   ███╗███████╗                                
+ ██╔════╝ ██╔══██╗████╗ ████║██╔════╝                                
+ ██║  ███╗███████║██╔████╔██║█████╗                                  
+ ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝                                  
+ ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗                                
+  ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝                                
+                                                                     
+ ██╗   ██╗ █████╗ ██████╗ ██╗ █████╗ ██████╗ ██╗     ███████╗███████╗
+ ██║   ██║██╔══██╗██╔══██╗██║██╔══██╗██╔══██╗██║     ██╔════╝██╔════╝
+ ██║   ██║███████║██████╔╝██║███████║██████╔╝██║     █████╗  ███████╗
+ ╚██╗ ██╔╝██╔══██║██╔══██╗██║██╔══██║██╔══██╗██║     ██╔══╝  ╚════██║
+  ╚████╔╝ ██║  ██║██║  ██║██║██║  ██║██████╔╝███████╗███████╗███████║
+   ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝                                                                   
+ """
+
 ## Initialize Pygame Stuff
 pygame.init()
 pygame.font.init()
@@ -192,88 +218,24 @@ screenHeight = 800
 ## New Game Controller PBject
 AOF = GameController(screenWidth, screenHeight)
 
-## Alternative smaller setup
-# screenWidth = 1400
-# screenHeight = 700
-
 ## Set the size of the window using the above dimensions
 size = (screenWidth, screenHeight)
 screen = pygame.display.set_mode(size)
 
 ## Setting the background image and orienting starting from (0,0) origin i.e top left corner
-# BackGround = Background("Arena.jpg", [0, 0])
 BackGround = Background("Arena_Night.jpg", [0, 0], (screenWidth, screenHeight))
-
-
-"""
-    Pseudo-random player selection, may eventually switch to player selection screen
-
-        Grabs the # of frames for idle movement and the name of the sprite
-"""
 
 players = AOF.loadPlayers()
 
-C4 = PlayerSelector()
-sprites = C4.chooseSprites()
-P1 = sprites[0]
-P2 = sprites[1]
-
-P1_idle_frameCount = P1["Action"]["Idle"]["frameCount"]
-P1_jump_frameCount = P1["Action"]["Jump"]["frameCount"]
-P1_idle_frame = 0
-P1_jump_frame = 0
-P1_name = P1["Screen Name"]
-
-P2_idle_frameCount = P2["Action"]["Idle"]["frameCount"]
-P2_jump_frameCount = P2["Action"]["Jump"]["frameCount"]
-P2_idle_frame = 2
-P2_jump_frame = 0
-P2_name = P2["Screen Name"]
+P1 = players[0]
+P2 = players[1]
 
 pp = pprint.PrettyPrinter(depth=4)
-pp.pprint(sprites)
-
-## Get System Font Info
-# pp.pprint(pygame.font.get_fonts())
-
-## Default Player Variables to get ball rolling
-## Smaller Dimension settings
-# Player1_StartingPosition = (80,300)
-# Player2_StartingPosition = (1100,300)
-# Default_Smoothscale_Dimensions = (250,250)
-
-## Default Player Variables to get ball rolling
-Player1_StartingPosition = (350,500)
-Player2_StartingPosition = (1350,500)
-Default_Smoothscale_Dimensions = (250,250)
-Projectile_Smoothscale_Dimensions = (150,50)
-
-## Movement Variables
-PLAYER_SPEED = 10
-VERTICAL_SPEED = 15
-JUMP_HEIGHT = 150
-PROJECTILE_VELOCITY = 75
-
-player1_x = Player1_StartingPosition[0]
-player1_y = Player1_StartingPosition[1]
-player2_x = Player2_StartingPosition[0]
-player2_y = Player2_StartingPosition[1]
-
-P1_Standing = True
-P1_Jumping = False
-P1_Descending = False
-P1_Projectile = False
-P1_Jump_Height = 0
-
-P2_Standing = True
-P2_Jumping = False
-P2_Descending = False
-P2_Projectile = False
-P2_Jump_Height = 0
+pp.pprint(players)
 
 
 ## Set the title of the window
-banner = f'Get Ready for Deadliest Warrior! {P1_name} vs {P2_name}'
+banner = f'Get Ready for Deadliest Warrior! {P1.name} vs {P2.name}'
 pygame.display.set_caption(banner)
 
 tick = 0
@@ -288,14 +250,14 @@ tick = 0
  ╚██████╗╚██████╔╝███████╗███████╗██║███████║██║╚██████╔╝██║ ╚████║
   ╚═════╝ ╚═════╝ ╚══════╝╚══════╝╚═╝╚══════╝╚═╝ ╚═════╝ ╚═╝  ╚═══╝
                                                                    
-  ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗                          
- ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝                          
- ██║     ███████║█████╗  ██║     █████╔╝                           
- ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗                           
- ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗                          
-  ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝                          
+  ██████╗██╗  ██╗███████╗ ██████╗██╗  ██╗██╗███╗   ██╗ ██████╗     
+ ██╔════╝██║  ██║██╔════╝██╔════╝██║ ██╔╝██║████╗  ██║██╔════╝     
+ ██║     ███████║█████╗  ██║     █████╔╝ ██║██╔██╗ ██║██║  ███╗    
+ ██║     ██╔══██║██╔══╝  ██║     ██╔═██╗ ██║██║╚██╗██║██║   ██║    
+ ╚██████╗██║  ██║███████╗╚██████╗██║  ██╗██║██║ ╚████║╚██████╔╝    
+  ╚═════╝╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝╚═╝  ╚═══╝ ╚═════╝     
+                                                                    
 """
-
             
 def checkForHorizontalCollisions(currentX):
     if currentX <= 10:
@@ -332,49 +294,51 @@ while running:
 
     # Move Player 1
     if keys[pygame.K_a]:
-        P1_Collision = checkForHorizontalCollisions(player1_x - PLAYER_SPEED)
+        P1_Collision = checkForHorizontalCollisions(P1.player_X - AOF.PLAYER_SPEED)
         if P1_Collision == False:
-            player1_x -= PLAYER_SPEED
+            P1.player_X -= AOF.PLAYER_SPEED
     if keys[pygame.K_d]:
-        P1_Collision = checkForHorizontalCollisions(player1_x + PLAYER_SPEED)
+        P1_Collision = checkForHorizontalCollisions(P1.player_X + AOF.PLAYER_SPEED)
         if P1_Collision == False:
-            player1_x += PLAYER_SPEED
+            P1.player_X += AOF.PLAYER_SPEED
     if keys[pygame.K_w]:
-        if P1_Standing == True:
+        if P1.Standing == True:
             pygame.mixer.Channel(0).set_volume(0.05)
             pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
-            P1_Jumping = True
-            P1_Standing = False
+            P1.Jumping = True
+            P1.Standing = False
     
     if keys[pygame.K_LSHIFT]:
-        if P1_Projectile == False:
-            P1_Projectile = True
-            P1_Spear_X = player1_x
-            P1_Spear_Y = player1_y
-            P1_Spear = GameSprite('Projectiles\spear_LTR.png', (P1_Spear_X, P1_Spear_Y), Projectile_Smoothscale_Dimensions, False)
+        if P1.Projectile == False:
+            P1.Projectile = True
+            P1_Spear_X = P1.player_X
+            P1_Spear_Y = P1.player_Y
+            P1_Spear = GameSprite('Projectiles\spear_LTR.png',
+                                  (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
 
     # Move Player 2
     if keys[pygame.K_LEFT]:
-        P2_Collision = checkForHorizontalCollisions(player2_x - PLAYER_SPEED)
+        P2_Collision = checkForHorizontalCollisions(P2.player_X - AOF.PLAYER_SPEED)
         if P2_Collision == False:
-            player2_x -= PLAYER_SPEED
+            P2.player_X -= AOF.PLAYER_SPEED
     if keys[pygame.K_RIGHT]:
-        P2_Collision = checkForHorizontalCollisions(player2_x + PLAYER_SPEED)
+        P2_Collision = checkForHorizontalCollisions(P2.player_X + AOF.PLAYER_SPEED)
         if P2_Collision == False:
-            player2_x += PLAYER_SPEED
+            P2.player_X += AOF.PLAYER_SPEED
     if keys[pygame.K_UP]:
-        if P2_Standing == True:
+        if P2.Standing == True:
             pygame.mixer.Channel(0).set_volume(0.05)
             pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
-            P2_Jumping = True
-            P2_Standing = False
+            P2.Jumping = True
+            P2.Standing = False
             
     if keys[pygame.K_RSHIFT]:
-        if P2_Projectile == False:
-            P2_Projectile = True
-            P2_Spear_X = player2_x
-            P2_Spear_Y = player2_y
-            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Projectile_Smoothscale_Dimensions, False)
+        if P2.Projectile == False:
+            P2.Projectile = True
+            P2_Spear_X = P2.player_X
+            P2_Spear_Y = P2.player_Y
+            P2_Spear = GameSprite('Projectiles\spear_RTL.png',
+                                  (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
         
 
     ## "I want you to paint it, paint it, paint it black"
@@ -389,98 +353,104 @@ while running:
     screen.blit(text, (screenWidth/3,20))
 
     if tick % 2 == 0:
-        if P1_idle_frame < P1_idle_frameCount - 1:
-            P1_idle_frame += 1
+        if P1.idle_frame < P1.idle_frameCount - 1:
+            P1.idle_frame += 1
         else:
-            P1_idle_frame = 0
+            P1.idle_frame = 0
 
-        if P2_idle_frame < P2_idle_frameCount - 1:
-            P2_idle_frame += 1
+        if P2.idle_frame < P2.idle_frameCount - 1:
+            P2.idle_frame += 1
         else:
-            P2_idle_frame = 0
+            P2.idle_frame = 0
 
 
     ## Spawn player sprites
-    if P1_Standing == True:
-        P1_link = f'{P1["Action"]["Idle"]["imagePath"]}\{P1_idle_frame}.png'
-        Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
+    if P1.Standing == True:
+        P1_link = f'{P1.spriteObject["Action"]["Idle"]["imagePath"]}\{P1.idle_frame}.png'
+        Player1 = GameSprite(P1_link, 
+                             (P1.player_X, P1.player_Y), AOF.Default_Smoothscale_Dimensions, False)
 
-    if P2_Standing == True:
-        P2_link = f'{P2["Action"]["Idle"]["imagePath"]}\{P2_idle_frame}.png'
-        Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
+    if P2.Standing == True:
+        P2_link = f'{P2.spriteObject["Action"]["Idle"]["imagePath"]}\{P2.idle_frame}.png'
+        Player2 = GameSprite(P2_link, 
+                             (P2.player_X, P2.player_Y), AOF.Default_Smoothscale_Dimensions, True)
 
 
     ## Jumping and Descending for Player 1
-    if P1_Jumping == True:
-        P1_link = f'{P1["Action"]["Jump"]["imagePath"]}\{P1_jump_frame}.png'
-        Player1 = GameSprite(P1_link, (player1_x, player1_y), Default_Smoothscale_Dimensions, False)
+    if P1.Jumping == True:
+        P1_link = f'{P1.spriteObject["Action"]["Jump"]["imagePath"]}\{P1.jump_frame}.png'
+        Player1 = GameSprite(P1_link, 
+                             (P1.player_X, P1.player_Y), AOF.Default_Smoothscale_Dimensions, False)
         
-        if P1_Descending == False:
-            if P1_jump_frame < P1_jump_frameCount -1:
-                P1_jump_frame += 1
-            player1_y -= VERTICAL_SPEED
-            P1_Jump_Height += VERTICAL_SPEED
+        if P1.Descending == False:
+            if P1.jump_frame < P1.jump_frameCount -1:
+                P1.jump_frame += 1
+            P1.player_Y -= AOF.VERTICAL_SPEED
+            P1.Jump_Height += AOF.VERTICAL_SPEED
 
-            if P1_Jump_Height == JUMP_HEIGHT:
-                P1_Descending = True
+            if P1.Jump_Height == AOF.JUMP_HEIGHT:
+                P1.Descending = True
         else:
-            if P1_jump_frame > 0:
-                P1_jump_frame -= 1
-            player1_y += PLAYER_SPEED
-            P1_Jump_Height -= PLAYER_SPEED
+            if P1.jump_frame > 0:
+                P1.jump_frame -= 1
+            P1.player_Y += AOF.PLAYER_SPEED
+            P1.Jump_Height -= AOF.PLAYER_SPEED
 
-            if P1_Jump_Height == 0:
-                P1_Descending = False
-                P1_Jumping = False
-                P1_Standing = True
-                P1_jump_frame = 0
+            if P1.Jump_Height == 0:
+                P1.Descending = False
+                P1.Jumping = False
+                P1.Standing = True
+                P1.jump_frame = 0
 
 
     ## Jumping and Descending for Player 2
-    if P2_Jumping == True:
-        P2_link = f'{P2["Action"]["Jump"]["imagePath"]}\{P2_jump_frame}.png'
-        Player2 = GameSprite(P2_link, (player2_x, player2_y), Default_Smoothscale_Dimensions, True)
+    if P2.Jumping == True:
+        P2_link = f'{P2.spriteObject["Action"]["Jump"]["imagePath"]}\{P2.jump_frame}.png'
+        Player2 = GameSprite(P2_link, 
+                             (P2.player_X, P2.player_Y), AOF.Default_Smoothscale_Dimensions, True)
 
-        if P2_Descending == False:
-            if P2_jump_frame < P2_jump_frameCount -1:
-                P2_jump_frame += 1
-            player2_y -= VERTICAL_SPEED
-            P2_Jump_Height += VERTICAL_SPEED
+        if P2.Descending == False:
+            if P2.jump_frame < P2.jump_frameCount -1:
+                P2.jump_frame += 1
+            P2.player_Y -= AOF.VERTICAL_SPEED
+            P2.Jump_Height += AOF.VERTICAL_SPEED
 
-            if P2_Jump_Height == JUMP_HEIGHT:
-                P2_Descending = True
+            if P2.Jump_Height == AOF.JUMP_HEIGHT:
+                P2.Descending = True
         else:
-            if P2_jump_frame > 0:
-                P2_jump_frame -= 1
-            player2_y += PLAYER_SPEED
-            P2_Jump_Height -= PLAYER_SPEED
+            if P2.jump_frame > 0:
+                P2.jump_frame -= 1
+            P2.player_Y += AOF.PLAYER_SPEED
+            P2.Jump_Height -= AOF.PLAYER_SPEED
 
-            if P2_Jump_Height == 0:
-                P2_Descending = False
-                P2_Jumping = False
-                P2_Standing = True
-                P2_jump_frame = 0
+            if P2.Jump_Height == 0:
+                P2.Descending = False
+                P2.Jumping = False
+                P2.Standing = True
+                P2.jump_frame = 0
 
 
     ## Animation of Player 1's projectiles
-    if P1_Projectile == True:
-        P1_Spear_X += PROJECTILE_VELOCITY
+    if P1.Projectile == True:
+        P1_Spear_X += AOF.PROJECTILE_VELOCITY
         P1_Collision = checkForHorizontalCollisions(P1_Spear_X)
         
         if P1_Collision == False:
-            P1_Spear = GameSprite('Projectiles\spear_LTR.png', (P1_Spear_X, P1_Spear_Y), Projectile_Smoothscale_Dimensions, False)
+            P1_Spear = GameSprite('Projectiles\spear_LTR.png',
+                                  (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
         else:
             P1_Projectile = False
 
     ## Animation of Player 2's projectiles
-    if P2_Projectile == True:
-        P2_Spear_X -= PROJECTILE_VELOCITY
+    if P2.Projectile == True:
+        P2_Spear_X -= AOF.PROJECTILE_VELOCITY
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
         
         if P2_Collision == False:
-            P2_Spear = GameSprite('Projectiles\spear_RTL.png', (P2_Spear_X, P2_Spear_Y), Projectile_Smoothscale_Dimensions, False)
+            P2_Spear = GameSprite('Projectiles\spear_RTL.png',
+                                  (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
         else:
-            P2_Projectile = False
+            P2.Projectile = False
 
     tick += 1
 
