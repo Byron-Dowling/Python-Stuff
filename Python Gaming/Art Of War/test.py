@@ -94,22 +94,37 @@ class Background(pygame.sprite.Sprite):
  ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝
                                              
 """
-
-class GameSprite:
+class GameSprite(pygame.sprite.Sprite):
     def __init__(self, imgLink, location, smsc_dimensions, inverted=False):
+        pygame.sprite.Sprite.__init__(self)
+        self.location = location
+        self.image = self.__makeImage(imgLink, smsc_dimensions, inverted)
+        self.rect = self.image.get_rect(topleft = location)
+        self.mask = pygame.mask.from_surface(self.image)
         
+    def draw(self):
+        screen.blit(self.image, self.rect.topleft)
+        
+    def move(self, x, y):
+        self.rect.x += x
+        self.rect.y += y
+        
+    def changeImage(self, imgLink, smsc_dimensions, inverted=False):
+        self.image = self.__makeImage(imgLink, smsc_dimensions, inverted)
+        
+    def __makeImage(self, imgLink, smsc_dimensions, inverted=False):
         if not inverted:
-            GS = pygame.image.load(imgLink)
-            GS = pygame.transform.smoothscale(GS, smsc_dimensions)
-            screen.blit(GS, location)
+            image = pygame.image.load(imgLink)
+            image = pygame.transform.smoothscale(image, smsc_dimensions)
 
         ## Inverted case where the Sprite is facing left
         else:
-            GS = pygame.image.load(imgLink)
-            GS = pygame.transform.smoothscale(GS, smsc_dimensions)
-            GS_Copy = GS.copy()
-            IGS = pygame.transform.flip(GS_Copy, True, False)
-            screen.blit(IGS, location)
+            image = pygame.image.load(imgLink)
+            image = pygame.transform.smoothscale(image, smsc_dimensions)
+            image_Copy = image.copy()
+            image = pygame.transform.flip(image_Copy, True, False)
+            
+        return image
 
 ###################################################################################################
 
@@ -164,11 +179,15 @@ class GameController:
         self.screenHeight = height
         self.PLAYER_SPEED = 10
         self.VERTICAL_SPEED = 15
+        self.FPS = 60
         self.JUMP_HEIGHT = 150
         self.PROJECTILE_VELOCITY = 75
+        self.right_health = 10
+        self.left_health = 10
         self.Default_Smoothscale_Dimensions = (250,250)
         self.Projectile_Smoothscale_Dimensions = (150,50)
         self.Players = []
+        self.clock = pygame.time.Clock()
 
     def getScreenSize(self):
         dimensions = (self.screenWidth, self.screenHeight)
@@ -225,13 +244,14 @@ screen = pygame.display.set_mode(size)
 ## Setting the background image and orienting starting from (0,0) origin i.e top left corner
 BackGround = Background("Arena_Night.jpg", [0, 0], (screenWidth, screenHeight))
 
+## Get System Font Info
+# pp = pprint.PrettyPrinter(depth=4)
+# pp.pprint(pygame.font.get_fonts())
+
 players = AOF.loadPlayers()
 
 P1 = players[0]
 P2 = players[1]
-
-pp = pprint.PrettyPrinter(depth=4)
-pp.pprint(players)
 
 
 ## Set the title of the window
@@ -267,6 +287,20 @@ def checkForHorizontalCollisions(currentX):
     else:
         return False
 
+"""
+    collide_mask(sprite1, sprite2) -> (int, int)
+    collide_mask(sprite1, sprite2) -> None
+"""
+
+def checkForProjectileCollision(sprite, projectile):
+    result = pygame.sprite.collide_mask(sprite, projectile)
+
+    if result != None:
+        print("A collision was detected!")
+        return True
+    else:
+        return False
+
 ###################################################################################################
 
 """
@@ -281,6 +315,7 @@ def checkForHorizontalCollisions(currentX):
 ## Run the game loop
 while running:
 
+    AOF.clock.tick(AOF.FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -315,6 +350,7 @@ while running:
             P1_Spear_Y = P1.player_Y
             P1_Spear = GameSprite('Projectiles\spear_LTR.png',
                                   (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
+            P1_Spear.draw()
 
     # Move Player 2
     if keys[pygame.K_LEFT]:
@@ -339,6 +375,7 @@ while running:
             P2_Spear_Y = P2.player_Y
             P2_Spear = GameSprite('Projectiles\spear_RTL.png',
                                   (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
+            P2_Spear.draw()
         
 
     ## "I want you to paint it, paint it, paint it black"
@@ -351,6 +388,20 @@ while running:
     text = font.render("Art of War", 1,(255,255,255))
 
     screen.blit(text, (screenWidth/3,20))
+
+    
+    """
+        Health Bar Shiznit
+    """
+    # Health_font = pygame.font.Font('font/Algerian.ttf', 40)
+    Health_font = pygame.font.SysFont('Algerian', 40)
+    right_health_text = Health_font.render(
+            "Health: " + str(AOF.right_health), 1, (255,255,255))
+    left_health_text = Health_font.render(
+            "Health: " + str(AOF.left_health), 1, (255,255,255))
+    screen.blit(right_health_text, (screenWidth - right_health_text.get_width() - 10, 10))
+    screen.blit(left_health_text, (10, 10))
+
 
     if tick % 2 == 0:
         if P1.idle_frame < P1.idle_frameCount - 1:
@@ -369,11 +420,13 @@ while running:
         P1_link = f'{P1.spriteObject["Action"]["Idle"]["imagePath"]}\{P1.idle_frame}.png'
         Player1 = GameSprite(P1_link, 
                              (P1.player_X, P1.player_Y), AOF.Default_Smoothscale_Dimensions, False)
+        Player1.draw()
 
     if P2.Standing == True:
         P2_link = f'{P2.spriteObject["Action"]["Idle"]["imagePath"]}\{P2.idle_frame}.png'
         Player2 = GameSprite(P2_link, 
                              (P2.player_X, P2.player_Y), AOF.Default_Smoothscale_Dimensions, True)
+        Player2.draw()
 
 
     ## Jumping and Descending for Player 1
@@ -381,6 +434,7 @@ while running:
         P1_link = f'{P1.spriteObject["Action"]["Jump"]["imagePath"]}\{P1.jump_frame}.png'
         Player1 = GameSprite(P1_link, 
                              (P1.player_X, P1.player_Y), AOF.Default_Smoothscale_Dimensions, False)
+        Player1.draw()
         
         if P1.Descending == False:
             if P1.jump_frame < P1.jump_frameCount -1:
@@ -408,6 +462,7 @@ while running:
         P2_link = f'{P2.spriteObject["Action"]["Jump"]["imagePath"]}\{P2.jump_frame}.png'
         Player2 = GameSprite(P2_link, 
                              (P2.player_X, P2.player_Y), AOF.Default_Smoothscale_Dimensions, True)
+        Player2.draw()
 
         if P2.Descending == False:
             if P2.jump_frame < P2.jump_frameCount -1:
@@ -434,21 +489,27 @@ while running:
     if P1.Projectile == True:
         P1_Spear_X += AOF.PROJECTILE_VELOCITY
         P1_Collision = checkForHorizontalCollisions(P1_Spear_X)
+        P1_Hit = checkForProjectileCollision(Player2, P1_Spear)
         
         if P1_Collision == False:
             P1_Spear = GameSprite('Projectiles\spear_LTR.png',
                                   (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
+            P1_Spear.draw()
+
         else:
-            P1_Projectile = False
+            P1.Projectile = False
 
     ## Animation of Player 2's projectiles
     if P2.Projectile == True:
         P2_Spear_X -= AOF.PROJECTILE_VELOCITY
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
+        P2_Hit = checkForProjectileCollision(Player1.mask, P2_Spear.mask)
         
         if P2_Collision == False:
             P2_Spear = GameSprite('Projectiles\spear_RTL.png',
                                   (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
+            P2_Spear.draw()
+
         else:
             P2.Projectile = False
 

@@ -128,56 +128,6 @@ class GameSprite:
    ╚═══╝  ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝╚═╝  ╚═╝╚═════╝ ╚══════╝╚══════╝╚══════╝                                                                   
  """
 
-## Trying to convert a lot of these game variables and player variables into a driver class
-class Player:
-    def __init__(self, SP, P):
-        self.StartingPosition = SP
-        self.player_X = SP[0]
-        self.player_Y = SP[1]
-        self.Standing = True
-        self.Jumping = False
-        self.Descending = False
-        self.Projectile = False
-        self.Jump_Height = 0
-        self.idle_frameCount = P["Action"]["Idle"]["frameCount"]
-        self.jump_frameCount = P["Action"]["Jump"]["frameCount"]
-        self.idle_frame = 0
-        self.jump_frame = 0
-        self.name = P["Screen Name"]
-
-
-
-class GameController:
-    def __init__(self, width, height):
-        self.Running = True
-        self.screenWidth = width
-        self.screenHeight = height
-        self.PLAYER_SPEED = 10
-        self.VERTICAL_SPEED = 15
-        self.JUMP_HEIGHT = 150
-        self.PROJECTILE_VELOCITY = 75
-        self.Default_Smoothscale_Dimensions = (250,250)
-        self.Projectile_Smoothscale_Dimensions = (150,50)
-        self.Players = []
-
-    def getScreenSize(self):
-        dimensions = (self.screenWidth, self.screenHeight)
-        return dimensions
-    
-    def loadPlayers(self):
-        C4 = PlayerSelector()
-        sprites = C4.chooseSprites()
-        P1 = Player((350, 500), sprites[0])
-        P2 = Player((1350, 500), sprites[1])
-
-        self.Players.append(copy.deepcopy(P1))
-        self.Players.append(copy.deepcopy(P2))
-
-        return self.Players
-
-
-###################################################################################################
-
 ## Initialize Pygame Stuff
 pygame.init()
 pygame.font.init()
@@ -188,9 +138,6 @@ running = True
 ## Rough Dimensions of Byron's Monitor
 screenWidth = 1750
 screenHeight = 800
-
-## New Game Controller PBject
-AOF = GameController(screenWidth, screenHeight)
 
 ## Alternative smaller setup
 # screenWidth = 1400
@@ -210,9 +157,6 @@ BackGround = Background("Arena_Night.jpg", [0, 0], (screenWidth, screenHeight))
 
         Grabs the # of frames for idle movement and the name of the sprite
 """
-
-players = AOF.loadPlayers()
-
 C4 = PlayerSelector()
 sprites = C4.chooseSprites()
 P1 = sprites[0]
