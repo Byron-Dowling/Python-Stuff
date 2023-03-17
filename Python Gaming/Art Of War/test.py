@@ -92,25 +92,25 @@ class Background(pygame.sprite.Sprite):
  ╚════██║██╔═══╝ ██╔══██╗██║   ██║   ██╔══╝  
  ███████║██║     ██║  ██║██║   ██║   ███████╗
  ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝
-                                             
+
 """
 class GameSprite(pygame.sprite.Sprite):
     def __init__(self, imgLink, location, smsc_dimensions, inverted=False):
-        pygame.sprite.Sprite.__init__(self)
+        self.playerMain = pygame.sprite.Sprite()
         self.location = location
-        self.image = self.__makeImage(imgLink, smsc_dimensions, inverted)
-        self.rect = self.image.get_rect(topleft = location)
-        self.mask = pygame.mask.from_surface(self.image)
+        self.playerMain.image = self.__makeImage(imgLink, smsc_dimensions, inverted)
+        self.playerMain.rect = self.playerMain.image.get_rect(center = location)
+        self.playerMain.mask = pygame.mask.from_surface(self.playerMain.image)
         
     def draw(self):
-        screen.blit(self.image, self.rect.topleft)
+        screen.blit(self.playerMain.image, self.playerMain.rect.topleft)
         
     def move(self, x, y):
         self.rect.x += x
         self.rect.y += y
         
     def changeImage(self, imgLink, smsc_dimensions, inverted=False):
-        self.image = self.__makeImage(imgLink, smsc_dimensions, inverted)
+        self.playerMain.image = self.__makeImage(imgLink, smsc_dimensions, inverted)
         
     def __makeImage(self, imgLink, smsc_dimensions, inverted=False):
         if not inverted:
@@ -293,7 +293,7 @@ def checkForHorizontalCollisions(currentX):
 """
 
 def checkForProjectileCollision(sprite, projectile):
-    result = pygame.sprite.collide_mask(sprite, projectile)
+    result = pygame.sprite.collide_mask(sprite.playerMain, projectile.playerMain)
 
     if result != None:
         print("A collision was detected!")
@@ -503,7 +503,7 @@ while running:
     if P2.Projectile == True:
         P2_Spear_X -= AOF.PROJECTILE_VELOCITY
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
-        P2_Hit = checkForProjectileCollision(Player1.mask, P2_Spear.mask)
+        P2_Hit = checkForProjectileCollision(Player1, P2_Spear)
         
         if P2_Collision == False:
             P2_Spear = GameSprite('Projectiles\spear_RTL.png',
