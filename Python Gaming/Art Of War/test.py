@@ -384,6 +384,7 @@ while running:
     ## Layering background image of map imagery
     screen.blit(BackGround.image, BackGround.rect)
 
+    ## Game Banner
     font = pygame.font.SysFont('Algerian',70)
     text = font.render("Art of War", 1,(255,255,255))
 
@@ -490,6 +491,10 @@ while running:
         P1_Spear_X += AOF.PROJECTILE_VELOCITY
         P1_Collision = checkForHorizontalCollisions(P1_Spear_X)
         P1_Hit = checkForProjectileCollision(Player2, P1_Spear)
+
+        if P1_Hit == True:
+            AOF.right_health -= 1
+            P1.Projectile = False
         
         if P1_Collision == False:
             P1_Spear = GameSprite('Projectiles\spear_LTR.png',
@@ -504,6 +509,10 @@ while running:
         P2_Spear_X -= AOF.PROJECTILE_VELOCITY
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
         P2_Hit = checkForProjectileCollision(Player1, P2_Spear)
+
+        if P2_Hit == True:
+            AOF.left_health -= 1
+            P2.Projectile = False
         
         if P2_Collision == False:
             P2_Spear = GameSprite('Projectiles\spear_RTL.png',
