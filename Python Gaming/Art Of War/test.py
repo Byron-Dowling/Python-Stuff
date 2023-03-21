@@ -615,8 +615,9 @@ while running:
                 P2.Dead = True
                 pygame.mixer.Channel(4).set_volume(0.1)
                 pygame.mixer.Channel(4).play(pygame.mixer.Sound('fight_sounds\sword-slide-fight.wav'))
+                pygame.mixer.music.pause()
                 pygame.mixer.Channel(5).set_volume(0.03)
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\eren-titan-roar.mp3'))
+                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\medieval-fanfare.mp3'))
         if P1_Collision == False:
             P1_Spear.draw()
             if P1.weapon_frame < P1.weapon_frameCount - 2:
@@ -646,8 +647,9 @@ while running:
                 P1.Dead = True
                 pygame.mixer.Channel(4).set_volume(0.05)
                 pygame.mixer.Channel(4).play(pygame.mixer.Sound('fight_sounds\sword-slide-fight.wav'))
+                pygame.mixer.music.pause()
                 pygame.mixer.Channel(5).set_volume(0.03)
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\eren-titan-roar.mp3'))
+                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\medieval-fanfare.mp3'))
                 
         
         if P2_Collision == False:
