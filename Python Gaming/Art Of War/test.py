@@ -295,8 +295,8 @@ class GameController:
     def loadPlayers(self):
         C4 = PlayerSelector()
         sprites = C4.chooseSprites()
-        P1 = Player((350, 500), sprites[0])
-        P2 = Player((1450, 500), sprites[1])
+        P1 = Player((400, 500), sprites[0])
+        P2 = Player((1370, 500), sprites[1])
 
         self.Players.append(copy.deepcopy(P1))
         self.Players.append(copy.deepcopy(P2))
@@ -546,8 +546,8 @@ while running:
         left_health_text = Health_font.render(
                 "Player 1 Health: " + str(AOF.left_health), 1, AOF.RED)
     
-    screen.blit(right_health_text, (screenWidth - right_health_text.get_width() - 10, 10))
-    screen.blit(left_health_text, (10, 10))
+    screen.blit(right_health_text, (screenWidth - right_health_text.get_width() - 120, 10))
+    screen.blit(left_health_text, (120, 10))
     
     
 
