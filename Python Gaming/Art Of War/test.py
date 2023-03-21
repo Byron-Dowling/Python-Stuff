@@ -135,6 +135,7 @@ class Player:
         self.Moving = False
         self.Dead = False
         self.Attacking = False
+        self.Weapon = False
         self.Jump_Height = 0
         self.idle_frameCount = P["Action"]["Idle"]["frameCount"]
         self.jump_frameCount = P["Action"]["Jump"]["frameCount"]
@@ -142,12 +143,14 @@ class Player:
         self.move_frameCount = P["Action"]["Move"]["frameCount"]
         self.hurt_frameCount = P["Action"]["Hurt"]["frameCount"]
         self.attack_frameCount = P["Action"]["Attack"]["frameCount"]
+        self.weapon_frameCount = P["Action"]["Weapon"]["frameCount"]
         self.idle_frame = 0
         self.jump_frame = 0
         self.death_frame = 0
         self.move_frame = 0
         self.hurt_frame = 0
         self.attack_frame = 0
+        self.weapon_frame = 0
         self.name = P["Screen Name"]
 
     ## When the player has been killed
@@ -168,12 +171,17 @@ class Player:
                 P_link = f'{self.spriteObject["Action"]["Attack"]["imagePath"]}\{self.attack_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
-
+                P_weapon = f'{self.spriteObject["Action"]["Weapon"]["imagePath"]}\{self.weapon_frame}.png'
+                P_weapon = GameSprite(P_weapon, 
+                                (self.player_X, self.player_Y), AOFDSS, Inverted)
+                P_weapon.draw()
                 if self.attack_frame < self.attack_frameCount - 1:
                     self.attack_frame += 1
+                    self.weapon_frame += 1
                 else:
                     self.attack_frame = 0
                     self.Attacking = False
+                    self.Weapon = False
 
             if self.Standing == True and self.Attacking == False:
                 if self.Moving == False:
