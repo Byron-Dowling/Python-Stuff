@@ -296,7 +296,7 @@ class GameController:
         C4 = PlayerSelector()
         sprites = C4.chooseSprites()
         P1 = Player((350, 500), sprites[0])
-        P2 = Player((1350, 500), sprites[1])
+        P2 = Player((1450, 500), sprites[1])
 
         self.Players.append(copy.deepcopy(P1))
         self.Players.append(copy.deepcopy(P2))
