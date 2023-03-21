@@ -1,5 +1,5 @@
 """
-    Author:   Byron Dowling
+    Author:   Byron Dowling, Leslie Cook, Izzy Olaemimimo
     Class:    5443 2D Python Gaming
 
     Asset Credits:
@@ -128,11 +128,13 @@ class Player:
         self.spriteObject = P
         self.player_X = SP[0]
         self.player_Y = SP[1]
+        self.Crouching = False
         self.Standing = True
         self.Jumping = False
         self.Descending = False
         self.Projectile = False
         self.Moving = False
+        self.Hurt = False
         self.Dead = False
         self.Attacking = False
         self.Weapon = False
@@ -164,26 +166,39 @@ class Player:
             if self.death_frame < self.death_frameCount - 1:
                 self.death_frame += 1
 
+            ## Had to add this so that if you get killed mid-air, gravity still occurs
+            ## otherwise the Sprite lays dead floating in mid-air
+            if self.Jump_Height > 0:
+                self.Jump_Height -= 10
+                self.player_Y += 10
+    
     ## Handling whether the Player is Standing or the Player is Moving
     def movePlayer(self,AOFDSS,Inverted=False,AOFVS=15,AOFJH=150,AOFPS=10):
         if self.Dead == False:
+
             if self.Attacking == True:
                 P_link = f'{self.spriteObject["Action"]["Attack"]["imagePath"]}\{self.attack_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
-                P_weapon = f'{self.spriteObject["Action"]["Weapon"]["imagePath"]}\{self.weapon_frame}.png'
-                P_weapon = GameSprite(P_weapon, 
-                                (self.player_X, self.player_Y), AOFDSS, Inverted)
-                P_weapon.draw()
                 if self.attack_frame < self.attack_frameCount - 1:
                     self.attack_frame += 1
-                    self.weapon_frame += 1
                 else:
                     self.attack_frame = 0
                     self.Attacking = False
-                    self.Weapon = False
 
-            if self.Standing == True and self.Attacking == False:
+            if self.Hurt == True:
+                P_link = f'{self.spriteObject["Action"]["Hurt"]["imagePath"]}\{self.hurt_frame}.png'
+                Player = GameSprite(P_link, 
+                                (self.player_X, self.player_Y), AOFDSS, Inverted)
+                if self.hurt_frame < self.hurt_frameCount - 1:
+                    self.hurt_frame += 1
+                else:
+                    self.hurt_frame = 0
+                    self.Hurt = False
+
+            ## We want Standing/Idle to be lowest in order of importance, therefore it only
+            ## animates idle standing if the sprite isn't attacking or taking damage
+            if self.Standing == True and self.Attacking == False and self.Hurt == False:
                 if self.Moving == False:
                     P_link = f'{self.spriteObject["Action"]["Idle"]["imagePath"]}\{self.idle_frame}.png'
                     Player = GameSprite(P_link, 
@@ -203,7 +218,6 @@ class Player:
                 P_link = f'{self.spriteObject["Action"]["Jump"]["imagePath"]}\{self.jump_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
-            
                 if self.Descending == False:
                     if self.jump_frame < self.jump_frameCount -1:
                         self.jump_frame += 1
@@ -223,7 +237,6 @@ class Player:
                         self.Jumping = False
                         self.Standing = True
                         self.jump_frame = 0
-
         Player.draw()
         return Player
 
@@ -258,6 +271,7 @@ class GameController:
         self.right_health = 10
         self.left_health = 10
         self.Default_Smoothscale_Dimensions = (250,250)
+        self.Crouching_Smoothscale_Dimensions = (215,175)
         self.Projectile_Smoothscale_Dimensions = (150,50)
         self.Players = []
         self.clock = pygame.time.Clock()
@@ -320,6 +334,7 @@ screen = pygame.display.set_mode(size)
 
 ## Setting the background image and orienting starting from (0,0) origin i.e top left corner
 BackGround = Background("Arena_Night.jpg", [0, 0], (screenWidth, screenHeight))
+# BackGround = Background("Arena.jpg", [0, 0], (screenWidth, screenHeight))
 
 players = AOF.loadPlayers()
 
@@ -329,6 +344,9 @@ P2 = players[1]
 ## Set the title of the window
 banner = f'Get Ready for Deadliest Warrior! {P1.name} vs {P2.name}'
 pygame.display.set_caption(banner)
+
+P1_Inverted = False
+P2_Inverted = True
 
 tick = 0
 
@@ -390,10 +408,10 @@ while running:
             running = False
             break
 
-    # Get the pressed keys
+    ## Get the pressed keys
     keys = pygame.key.get_pressed()
 
-    # Move Player 1
+    ## Player 1 key controls
     if keys[pygame.K_a]:
         P1.Moving = True
         P1_Collision = checkForHorizontalCollisions(P1.player_X - AOF.PLAYER_SPEED)
@@ -405,13 +423,13 @@ while running:
         if P1_Collision == False and P1.Dead == False:
             P1.player_X += AOF.PLAYER_SPEED
     if keys[pygame.K_w]:
-        if P1.Standing == True:
+        if P1.Standing == True and P1.Dead == False:
             pygame.mixer.Channel(0).set_volume(0.05)
             pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
             P1.Jumping = True
             P1.Standing = False
     if keys[pygame.K_LSHIFT]:
-        if P1.Projectile == False:
+        if P1.Projectile == False and P1.Dead == False:
             P1.Projectile = True
             P1.Attacking = True
             P1_Spear_X = P1.player_X
@@ -419,8 +437,11 @@ while running:
             P1_Spear = GameSprite('Projectiles\spear_LTR.png',
                                   (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
             P1_Spear.draw()
+    if keys[pygame.K_s]:
+            P1.Crouching = True
 
-    # Move Player 2
+
+    ## Player 2 key controls
     if keys[pygame.K_LEFT]:
         P2.Moving = True
         P2_Collision = checkForHorizontalCollisions(P2.player_X - AOF.PLAYER_SPEED)
@@ -432,13 +453,13 @@ while running:
         if P2_Collision == False and P2.Dead == False:
             P2.player_X += AOF.PLAYER_SPEED
     if keys[pygame.K_UP]:
-        if P2.Standing == True:
+        if P2.Standing == True and P2.Dead == False:
             pygame.mixer.Channel(0).set_volume(0.05)
             pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
             P2.Jumping = True
             P2.Standing = False
     if keys[pygame.K_RSHIFT]:
-        if P2.Projectile == False:
+        if P2.Projectile == False and P2.Dead == False:
             P2.Projectile = True
             P2.Attacking = True
             P2_Spear_X = P2.player_X
@@ -446,6 +467,25 @@ while running:
             P2_Spear = GameSprite('Projectiles\spear_RTL.png',
                                   (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
             P2_Spear.draw()
+
+    if keys[pygame.K_DOWN]:
+        P2.Crouching = True
+
+    """
+        Handles where if the sprites walk past each other, they will flip their directions
+
+        This created a new problem though where now the projectiles fly in the wrong direction and
+        aren't inverted properly so we would need to fix that.
+
+        Will get to that later.
+        - Byron
+    """
+    if P1.player_X > (P2.player_X + 25):
+        P1_Inverted = True
+        P2_Inverted = False
+    else:
+        P1_Inverted = False
+        P2_Inverted = True
         
 
     ## "I want you to paint it, paint it, paint it black"
@@ -472,6 +512,7 @@ while running:
     """
     Health_font = pygame.font.SysFont('Algerian', 50)
 
+    ## Right Health Bar conditionals
     if AOF.right_health > 7:
         right_health_text = Health_font.render(
                 "Health: " + str(AOF.right_health), 1, AOF.GREEN)
@@ -482,6 +523,7 @@ while running:
         right_health_text = Health_font.render(
                 "Health: " + str(AOF.right_health), 1, AOF.RED)
         
+    ## Left Health Bar conditionlas
     if AOF.left_health > 7:
         left_health_text = Health_font.render(
                 "Health: " + str(AOF.left_health), 1, AOF.GREEN)
@@ -495,6 +537,7 @@ while running:
     screen.blit(right_health_text, (screenWidth - right_health_text.get_width() - 10, 10))
     screen.blit(left_health_text, (10, 10))
 
+    ## So the idle frames aren't cracked out
     if tick % 2 == 0:
         if P1.idle_frame < P1.idle_frameCount - 1:
             P1.idle_frame += 1
@@ -511,14 +554,20 @@ while running:
         on the conditions captured from key input.
     """
     if P1.Dead == True:
-        P1.playerDeathAnimation(AOF.Default_Smoothscale_Dimensions)
+        P1.playerDeathAnimation(AOF.Default_Smoothscale_Dimensions,P1_Inverted)
+    elif P1.Crouching == True:
+        Player1 = P1.movePlayer(AOF.Crouching_Smoothscale_Dimensions,P1_Inverted)
+        P1.Crouching = False
     else:
-        Player1 = P1.movePlayer(AOF.Default_Smoothscale_Dimensions)
+        Player1 = P1.movePlayer(AOF.Default_Smoothscale_Dimensions,P1_Inverted)
 
     if P2.Dead == True:
-        P2.playerDeathAnimation(AOF.Default_Smoothscale_Dimensions, True)
+        P2.playerDeathAnimation(AOF.Default_Smoothscale_Dimensions,P2_Inverted)
+    elif P2.Crouching == True:
+        Player2 = P2.movePlayer(AOF.Crouching_Smoothscale_Dimensions,P2_Inverted)
+        P2.Crouching = False
     else:
-        Player2 = P2.movePlayer(AOF.Default_Smoothscale_Dimensions,True)
+        Player2 = P2.movePlayer(AOF.Default_Smoothscale_Dimensions,P2_Inverted)
 
 
     ## Animation of Player 1's projectiles
@@ -527,7 +576,10 @@ while running:
         P1_Collision = checkForHorizontalCollisions(P1_Spear_X)
         P1_Hit = checkForProjectileCollision(Player2, P1_Spear)
 
+        P1_Spear = GameSprite(fr'{P1.spriteObject["Action"]["Weapon"]["imagePath"]}\{P1.weapon_frame}.png',
+                        (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, True)
         if P1_Hit == True:
+            P2.Hurt = True
             if AOF.right_health > 0:
                 AOF.right_health -= 1
             P1.Projectile = False
@@ -536,10 +588,11 @@ while running:
                 P2.Dead = True
         
         if P1_Collision == False:
-            P1_Spear = GameSprite('Projectiles\spear_LTR.png',
-                                  (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
             P1_Spear.draw()
-
+            if P1.weapon_frame < P1.weapon_frameCount - 2:
+                P1.weapon_frame += 1
+            else:
+                P1.weapon_frame = 0
         else:
             P1.Projectile = False
 
@@ -549,7 +602,10 @@ while running:
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
         P2_Hit = checkForProjectileCollision(Player1, P2_Spear)
 
+        P2_Spear = GameSprite(fr'{P2.spriteObject["Action"]["Weapon"]["imagePath"]}\{P2.weapon_frame}.png',
+                        (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
         if P2_Hit == True:
+            P1.Hurt = True
             if AOF.left_health > 0:
                 AOF.left_health -= 1
             P2.Projectile = False
@@ -558,10 +614,11 @@ while running:
                 P1.Dead = True
         
         if P2_Collision == False:
-            P2_Spear = GameSprite('Projectiles\spear_RTL.png',
-                                  (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
             P2_Spear.draw()
-
+            if P2.weapon_frame < P2.weapon_frameCount - 2:
+                P2.weapon_frame += 1
+            else:
+                P2.weapon_frame = 0
         else:
             P2.Projectile = False
 

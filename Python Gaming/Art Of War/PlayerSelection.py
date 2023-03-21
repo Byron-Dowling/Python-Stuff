@@ -1,5 +1,5 @@
 """
-    Author:   Byron Dowling
+    Author:   Byron Dowling, Leslie Cook, Izzy Olaemimimo
     Class:    5443 2D Python Gaming
 """
 
@@ -60,8 +60,7 @@ class PlayerSelector:
 
     def __init__ (self):
         self.characters = ["Knight1", "Knight2", "Knight3"]
-        self.warriorNames = ["A Holy Crusader Knight", "A Knight from the Feudalism Era", 
-        "A Roman Gladiator", "A Norseman", "A Viking Raider", "A 17th Century Pirate Raider"]
+        self.warriorNames = ["A Holy Crusader Knight", "A Knight from the Feudalism Era", "A Roman Gladiator"]
         self.characterSprites = []
 
         self.loadCharacters()
@@ -97,7 +96,6 @@ class PlayerSelector:
         selection.append(self.characterSprites[1])
 
         return selection
-
 
 if __name__ == '__main__':
     
