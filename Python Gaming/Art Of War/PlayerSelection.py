@@ -71,6 +71,8 @@ class PlayerSelector:
             characterSprite["Action"]["Move"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Move"]["imagePath"]))
             characterSprite["Action"]["Jump"]["imagePath"] = fr'Sprites\{self.characters[i]}\Jump'
             characterSprite["Action"]["Jump"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Jump"]["imagePath"]))
+            characterSprite["Action"]["Hurt"]["imagePath"] = fr'Sprites\{self.characters[i]}\Hurt'
+            characterSprite["Action"]["Hurt"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Hurt"]["imagePath"]))
 
             self.characterSprites.append(copy.deepcopy(characterSprite))
 
@@ -91,7 +93,6 @@ if __name__ == '__main__':
     
     C4 = PlayerSelector()
     C4.loadCharacters()
-    # C4.sanityCheck()
 
     sprites = C4.chooseSprites()
     player1 = sprites[0]
