@@ -618,6 +618,7 @@ while running:
                 pygame.mixer.music.pause()
                 pygame.mixer.Channel(5).set_volume(0.03)
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\medieval-fanfare.mp3'))
+                pygame.mixer.music.unpause()
         if P1_Collision == False:
             P1_Spear.draw()
             if P1.weapon_frame < P1.weapon_frameCount - 2:
@@ -650,7 +651,7 @@ while running:
                 pygame.mixer.music.pause()
                 pygame.mixer.Channel(5).set_volume(0.03)
                 pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\medieval-fanfare.mp3'))
-                
+                pygame.mixer.music.unpause()
         
         if P2_Collision == False:
             P2_Spear.draw()
