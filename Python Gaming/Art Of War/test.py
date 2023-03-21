@@ -134,6 +134,7 @@ class Player:
         self.Projectile = False
         self.Moving = False
         self.Dead = False
+        self.Attacking = False
         self.Jump_Height = 0
         self.idle_frameCount = P["Action"]["Idle"]["frameCount"]
         self.jump_frameCount = P["Action"]["Jump"]["frameCount"]
@@ -163,12 +164,22 @@ class Player:
     ## Handling whether the Player is Standing or the Player is Moving
     def movePlayer(self,AOFDSS,Inverted=False,AOFVS=15,AOFJH=150,AOFPS=10):
         if self.Dead == False:
-            if self.Standing == True:
+            if self.Attacking == True:
+                P_link = f'{self.spriteObject["Action"]["Attack"]["imagePath"]}\{self.attack_frame}.png'
+                Player = GameSprite(P_link, 
+                                (self.player_X, self.player_Y), AOFDSS, Inverted)
+
+                if self.attack_frame < self.attack_frameCount - 1:
+                    self.attack_frame += 1
+                else:
+                    self.attack_frame = 0
+                    self.Attacking = False
+
+            if self.Standing == True and self.Attacking == False:
                 if self.Moving == False:
                     P_link = f'{self.spriteObject["Action"]["Idle"]["imagePath"]}\{self.idle_frame}.png'
                     Player = GameSprite(P_link, 
                                         (self.player_X, self.player_Y), AOFDSS, Inverted)
-                    Player.draw()
                 else:
                     P_link = f'{self.spriteObject["Action"]["Move"]["imagePath"]}\{self.move_frame}.png'
                     Player = GameSprite(P_link, 
@@ -184,7 +195,6 @@ class Player:
                 P_link = f'{self.spriteObject["Action"]["Jump"]["imagePath"]}\{self.jump_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
-                Player.draw()
             
                 if self.Descending == False:
                     if self.jump_frame < self.jump_frameCount -1:
@@ -206,6 +216,7 @@ class Player:
                         self.Standing = True
                         self.jump_frame = 0
 
+        Player.draw()
         return Player
 
 ###################################################################################################
@@ -394,6 +405,7 @@ while running:
     if keys[pygame.K_LSHIFT]:
         if P1.Projectile == False:
             P1.Projectile = True
+            P1.Attacking = True
             P1_Spear_X = P1.player_X
             P1_Spear_Y = P1.player_Y
             P1_Spear = GameSprite('Projectiles\spear_LTR.png',
@@ -420,6 +432,7 @@ while running:
     if keys[pygame.K_RSHIFT]:
         if P2.Projectile == False:
             P2.Projectile = True
+            P2.Attacking = True
             P2_Spear_X = P2.player_X
             P2_Spear_Y = P2.player_Y
             P2_Spear = GameSprite('Projectiles\spear_RTL.png',
