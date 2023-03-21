@@ -41,6 +41,11 @@ characterSprite = {
         "Move": {
             "imagePath": "",
             "frameCount": 0
+        },
+
+         "Hurt": {
+            "imagePath": "",
+            "frameCount": 0
         }
     }
 }
