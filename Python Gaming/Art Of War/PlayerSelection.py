@@ -55,7 +55,7 @@ characterSprite = {
             "imagePath": "",
             "frameCount": 0
         },
-           "bloodSplatter": {
+        "bloodSplatter": {
             "imagePath": "",
             "frameCount": 0
         }
