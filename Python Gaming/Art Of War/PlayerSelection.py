@@ -77,23 +77,23 @@ class PlayerSelector:
         for i in range(len(self.characters)):
             characterSprite["Name"] = self.characters[i]
             characterSprite["Screen Name"] = self.warriorNames[i]
-            characterSprite["Action"]["Attack"]["imagePath"] = fr'Sprites\{self.characters[i]}\Attack'
+            characterSprite["Action"]["Attack"]["imagePath"] = fr'Sprites/{self.characters[i]}/Attack'
             characterSprite["Action"]["Attack"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Attack"]["imagePath"]))
-            characterSprite["Action"]["Die"]["imagePath"] = fr'Sprites\{self.characters[i]}\Die'
+            characterSprite["Action"]["Die"]["imagePath"] = fr'Sprites/{self.characters[i]}/Die'
             characterSprite["Action"]["Die"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Die"]["imagePath"]))
-            characterSprite["Action"]["Idle"]["imagePath"] = fr'Sprites\{self.characters[i]}\Idle'
+            characterSprite["Action"]["Idle"]["imagePath"] = fr'Sprites/{self.characters[i]}/Idle'
             characterSprite["Action"]["Idle"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Idle"]["imagePath"]))
-            characterSprite["Action"]["Move"]["imagePath"] = fr'Sprites\{self.characters[i]}\Move'
+            characterSprite["Action"]["Move"]["imagePath"] = fr'Sprites/{self.characters[i]}/Move'
             characterSprite["Action"]["Move"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Move"]["imagePath"]))
-            characterSprite["Action"]["Jump"]["imagePath"] = fr'Sprites\{self.characters[i]}\Jump'
+            characterSprite["Action"]["Jump"]["imagePath"] = fr'Sprites/{self.characters[i]}/Jump'
             characterSprite["Action"]["Jump"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Jump"]["imagePath"]))
-            characterSprite["Action"]["Hurt"]["imagePath"] = fr'Sprites\{self.characters[i]}\Hurt'
+            characterSprite["Action"]["Hurt"]["imagePath"] = fr'Sprites/{self.characters[i]}/Hurt'
             characterSprite["Action"]["Hurt"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Hurt"]["imagePath"]))
-            characterSprite["Action"]["Weapon"]["imagePath"] = fr'Sprites\{self.characters[i]}\Weapon'
+            characterSprite["Action"]["Weapon"]["imagePath"] = fr'Sprites/{self.characters[i]}/Weapon'
             characterSprite["Action"]["Weapon"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Weapon"]["imagePath"]))
-            characterSprite["Action"]["Blood"]["imagePath"] = fr'Sprites\{self.characters[i]}\Blood'
+            characterSprite["Action"]["Blood"]["imagePath"] = fr'Sprites/{self.characters[i]}/Blood'
             characterSprite["Action"]["Blood"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Blood"]["imagePath"]))
-            characterSprite["Action"]["bloodSplatter"]["imagePath"] = fr'Sprites\{self.characters[i]}\bloodSplatter'
+            characterSprite["Action"]["bloodSplatter"]["imagePath"] = fr'Sprites/{self.characters[i]}/bloodSplatter'
             characterSprite["Action"]["bloodSplatter"]["frameCount"] = len(os.listdir(characterSprite["Action"]["bloodSplatter"]["imagePath"]))
             self.characterSprites.append(copy.deepcopy(characterSprite))
 

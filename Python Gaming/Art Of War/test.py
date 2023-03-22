@@ -6,12 +6,12 @@
 
         Knight Sprites:
             - Author: [Free Game Assets]
-            - https:\\free-game-assets.itch.io\free-2d-knight-sprite-sheets
+            - https://free-game-assets.itch.io/free-2d-knight-sprite-sheets
 
         Background Art:
             - [Author] "klyaksun"
-            - https:\\www.vecteezy.com\vector-art\15370321-ancient-roman-arena-for-gladiators-fight
-            - https:\\www.vecteezy.com\vector-art\13852032-ancient-roman-arena-for-gladiators-fight-at-night
+            - https://www.vecteezy.com/vector-art/15370321-ancient-roman-arena-for-gladiators-fight
+            - https://www.vecteezy.com/vector-art/13852032-ancient-roman-arena-for-gladiators-fight-at-night
 
 """
 
@@ -161,15 +161,15 @@ class Player:
     ## When the player has been killed
     def playerDeathAnimation(self,AOFDSS,Inverted=False):
         if self.Dead == True:
-            P_link = f'{self.spriteObject["Action"]["Die"]["imagePath"]}\{self.death_frame}.png'
+            P_link = f'{self.spriteObject["Action"]["Die"]["imagePath"]}/{self.death_frame}.png'
             Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
-            P_blood = f'{self.spriteObject["Action"]["Blood"]["imagePath"]}\{self.blood_frame}.png'
+            P_blood = f'{self.spriteObject["Action"]["Blood"]["imagePath"]}/{self.blood_frame}.png'
             Player_blood = GameSprite(P_blood, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
             Player_blood.draw()
             Player.draw()
-            
+           
             if self.death_frame < self.death_frameCount - 1:
                 self.death_frame += 1
 
@@ -183,7 +183,7 @@ class Player:
     def movePlayer(self,AOFDSS,Inverted=False,AOFVS=15,AOFJH=150,AOFPS=10):
         if self.Dead == False:
             if self.Attacking == True:
-                P_link = f'{self.spriteObject["Action"]["Attack"]["imagePath"]}\{self.attack_frame}.png'
+                P_link = f'{self.spriteObject["Action"]["Attack"]["imagePath"]}/{self.attack_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
                 if self.attack_frame < self.attack_frameCount - 1:
@@ -193,7 +193,7 @@ class Player:
                     self.Attacking = False
 
             if self.Hurt == True:
-                P_link = f'{self.spriteObject["Action"]["Hurt"]["imagePath"]}\{self.hurt_frame}.png'
+                P_link = f'{self.spriteObject["Action"]["Hurt"]["imagePath"]}/{self.hurt_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
 
@@ -204,15 +204,15 @@ class Player:
                     self.hurt_frame = 0
                     self.Hurt = False
 
-            ## We want Standing\Idle to be lowest in order of importance, therefore it only
+            ## We want Standing/Idle to be lowest in order of importance, therefore it only
             ## animates idle standing if the sprite isn't attacking or taking damage
             if self.Standing == True and self.Attacking == False and self.Hurt == False:
                 if self.Moving == False:
-                    P_link = f'{self.spriteObject["Action"]["Idle"]["imagePath"]}\{self.idle_frame}.png'
+                    P_link = f'{self.spriteObject["Action"]["Idle"]["imagePath"]}/{self.idle_frame}.png'
                     Player = GameSprite(P_link, 
                                         (self.player_X, self.player_Y), AOFDSS, Inverted)
                 else:
-                    P_link = f'{self.spriteObject["Action"]["Move"]["imagePath"]}\{self.move_frame}.png'
+                    P_link = f'{self.spriteObject["Action"]["Move"]["imagePath"]}/{self.move_frame}.png'
                     Player = GameSprite(P_link, 
                                         (self.player_X, self.player_Y), AOFDSS, Inverted)
                     if self.move_frame < self.move_frameCount - 1:
@@ -222,7 +222,7 @@ class Player:
                 self.Moving = False
 
             if self.Jumping == True:
-                P_link = f'{self.spriteObject["Action"]["Jump"]["imagePath"]}\{self.jump_frame}.png'
+                P_link = f'{self.spriteObject["Action"]["Jump"]["imagePath"]}/{self.jump_frame}.png'
                 Player = GameSprite(P_link, 
                                 (self.player_X, self.player_Y), AOFDSS, Inverted)
                 if self.Descending == False:
@@ -327,7 +327,7 @@ class GameController:
 pygame.init()
 pygame.font.init()
 pygame.mixer.init()
-pygame.mixer.set_num_channels(6)
+pygame.mixer.set_num_channels(7)
 utilities.background_music()
 running = True
 
@@ -417,62 +417,57 @@ button_font = pygame.font.SysFont('Algerian', 50)
 button_text = button_font.render("RESET", True, AOF.TAN)
 button_rect = button_text.get_rect()
 button_rect.center = (screenWidth // 2, screenHeight - 200)
-
-reset_delay = 5000  # Delay reset for 5 seconds
-reset_time = None   # Time to reset the game
-game_over = False
-
 ## Run the game loop
 while running:
-    
     AOF.clock.tick(AOF.FPS)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-            game_over = True
         elif event.type == pygame.MOUSEBUTTONDOWN:
             if button_rect.collidepoint(event.pos):
                 # Reset the game
                 AOF.right_health = 10
                 AOF.left_health = 10
                 AOF.loadPlayers()
-                pygame.display.update()  
-
+                utilities.background_music() 
     if AOF.right_health <= 0 or AOF.left_health <= 0:
             # Draw the reset button and wait for the player to click it
             pygame.draw.rect(screen, (255, 0, 0), button_rect)
             screen.blit(button_text, button_rect)
-            pygame.display.flip()
-    
+            pygame.display.update()
     ## Get the pressed keys
     keys = pygame.key.get_pressed()
 
     ## Player 1 key controls
     if keys[pygame.K_a]:
         AOF.P1.Moving = True
+        pygame.mixer.Channel(6).set_volume(0.05)
+        pygame.mixer.Channel(6).play(pygame.mixer.Sound('fight_sounds/metal-plate.wav'))
         P1_Collision = checkForHorizontalCollisions(AOF.P1.player_X - AOF.PLAYER_SPEED)
         if P1_Collision == False and AOF.P1.Dead == False:
             AOF.P1.player_X -= AOF.PLAYER_SPEED
     if keys[pygame.K_d]:
         AOF.P1.Moving = True
+        pygame.mixer.Channel(6).set_volume(0.05)
+        pygame.mixer.Channel(6).play(pygame.mixer.Sound('fight_sounds/metal-plate.wav'))
         P1_Collision = checkForHorizontalCollisions(AOF.P1.player_X + AOF.PLAYER_SPEED)
         if P1_Collision == False and AOF.P1.Dead == False:
             AOF.P1.player_X += AOF.PLAYER_SPEED
     if keys[pygame.K_w]:
         if AOF.P1.Standing == True and AOF.P1.Dead == False:
-            pygame.mixer.Channel(0).set_volume(0.05)
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
+            pygame.mixer.Channel(6).set_volume(0.04)
+            pygame.mixer.Channel(6).play(pygame.mixer.Sound('fight_sounds/sword-hit-in-battle.wav'))
             AOF.P1.Jumping = True
             AOF.P1.Standing = False
     if keys[pygame.K_LSHIFT]:
         if AOF.P1.Projectile == False and AOF.P1.Dead == False:
             AOF.P1.Projectile = True
             pygame.mixer.Channel(1).set_volume(0.07)
-            pygame.mixer.Channel(1).play(pygame.mixer.Sound(r'fight_sounds\fighting-mans-voice.wav'))
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound('fight_sounds/fighting-mans-voice.wav'))
             AOF.P1.Attacking = True
             P1_Spear_X = AOF.P1.player_X
             P1_Spear_Y = AOF.P1.player_Y
-            P1_Spear = GameSprite('Projectiles\spear_LTR.png',
+            P1_Spear = GameSprite('Projectiles/spear_LTR.png',
                                   (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
             P1_Spear.draw()
     if keys[pygame.K_s]:
@@ -481,11 +476,15 @@ while running:
     ## Player 2 key controls
     if keys[pygame.K_LEFT]:
         AOF.P2.Moving = True
+        pygame.mixer.Channel(6).set_volume(0.05)
+        pygame.mixer.Channel(6).play(pygame.mixer.Sound('fight_sounds/metal-plate.wav'))
         P2_Collision = checkForHorizontalCollisions(AOF.P2.player_X - AOF.PLAYER_SPEED)
         if P2_Collision == False and AOF.P2.Dead == False:
             AOF.P2.player_X -= AOF.PLAYER_SPEED
     if keys[pygame.K_RIGHT]:
         AOF.P2.Moving = True
+        pygame.mixer.Channel(6).set_volume(0.05)
+        pygame.mixer.Channel(6).play(pygame.mixer.Sound('fight_sounds/metal-plate.wav'))
         P2_Collision = checkForHorizontalCollisions(AOF.P2.player_X + AOF.PLAYER_SPEED)
         if P2_Collision == False and AOF.P2.Dead == False:
             AOF.P2.player_X += AOF.PLAYER_SPEED
@@ -493,17 +492,17 @@ while running:
         if AOF.P2.Standing == True and AOF.P2.Dead == False:
             AOF.P2.Jumping = True
             pygame.mixer.Channel(0).set_volume(0.01)
-            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds\sword-hit-in-battle.wav'))
+            pygame.mixer.Channel(0).play(pygame.mixer.Sound('fight_sounds/sword-hit-in-battle.wav'))
             AOF.P2.Standing = False
     if keys[pygame.K_RSHIFT]:
         if AOF.P2.Projectile == False and AOF.P2.Dead == False:
             pygame.mixer.Channel(1).set_volume(0.07)
-            pygame.mixer.Channel(1).play(pygame.mixer.Sound(r'fight_sounds\fighting-mans-voice.wav'))
+            pygame.mixer.Channel(1).play(pygame.mixer.Sound('fight_sounds/fighting-mans-voice.wav'))
             AOF.P2.Projectile = True
             AOF.P2.Attacking = True
             P2_Spear_X = AOF.P2.player_X
             P2_Spear_Y = AOF.P2.player_Y
-            P2_Spear = GameSprite('Projectiles\spear_RTL.png',
+            P2_Spear = GameSprite('Projectiles/spear_RTL.png',
                                   (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, False)
             P2_Spear.draw()
     if keys[pygame.K_DOWN]:
@@ -533,10 +532,10 @@ while running:
     screen.blit(BackGround.image, BackGround.rect)
 
     ## Game Banner
-    font = pygame.font.SysFont('Algerian',75)
+    font = pygame.font.SysFont('Algerian',50)
     text = font.render("Are You Not Entertained?", 1, AOF.TAN)
 
-    screen.blit(text, (screenWidth/4,70))
+    screen.blit(text, (screenWidth/3,70))
 
     """
         Health Bar Stuff
@@ -627,11 +626,11 @@ while running:
             P1_Spear_X -= AOF.PROJECTILE_VELOCITY
         P1_Collision = checkForHorizontalCollisions(P1_Spear_X)
         P1_Hit = checkForProjectileCollision(Player2, P1_Spear)
-        P1_Spear = GameSprite(fr'{AOF.P1.spriteObject["Action"]["Weapon"]["imagePath"]}\{AOF.P1.weapon_frame}.png',
+        P1_Spear = GameSprite(fr'{AOF.P1.spriteObject["Action"]["Weapon"]["imagePath"]}/{AOF.P1.weapon_frame}.png',
                         (P1_Spear_X, P1_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, P1_Inverted)
         if P1_Hit == True:
             pygame.mixer.Channel(3).set_volume(0.05)
-            pygame.mixer.Channel(3).play(pygame.mixer.Sound('fight_sounds\knife-slice-cut.mp3'))
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound('fight_sounds/knife-slice-cut.mp3'))
             AOF.P2.Hurt = True
             if AOF.right_health > 0:
                 AOF.right_health -= 3
@@ -643,11 +642,10 @@ while running:
                     AOF.right_health = 0
                 AOF.P2.Dead = True
                 pygame.mixer.Channel(4).set_volume(0.1)
-                pygame.mixer.Channel(4).play(pygame.mixer.Sound('fight_sounds\sword-slide-fight.wav'))
+                pygame.mixer.Channel(4).play(pygame.mixer.Sound('fight_sounds/sword-slide-fight.wav'))
                 pygame.mixer.music.pause()
-                pygame.mixer.Channel(5).set_volume(0.03)
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\medieval-fanfare.mp3'))
-                
+                pygame.mixer.Channel(5).set_volume(0.05)
+                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds/medieval-fanfare.mp3'))
         if P1_Collision == False:
             P1_Spear.draw()
             if AOF.P1.weapon_frame < AOF.P1.weapon_frameCount - 2:
@@ -665,11 +663,11 @@ while running:
             P2_Spear_X += AOF.PROJECTILE_VELOCITY
         P2_Collision = checkForHorizontalCollisions(P2_Spear_X)
         P2_Hit = checkForProjectileCollision(Player1, P2_Spear)
-        P2_Spear = GameSprite(fr'{AOF.P2.spriteObject["Action"]["Weapon"]["imagePath"]}\{AOF.P2.weapon_frame}.png',
+        P2_Spear = GameSprite(fr'{AOF.P2.spriteObject["Action"]["Weapon"]["imagePath"]}/{AOF.P2.weapon_frame}.png',
                         (P2_Spear_X, P2_Spear_Y), AOF.Projectile_Smoothscale_Dimensions, not P2_Inverted)
         if P2_Hit == True:
             pygame.mixer.Channel(3).set_volume(0.1)
-            pygame.mixer.Channel(3).play(pygame.mixer.Sound('fight_sounds\knife-slice-cut.mp3'))
+            pygame.mixer.Channel(3).play(pygame.mixer.Sound('fight_sounds/knife-slice-cut.mp3'))
             AOF.P1.Hurt = True
             
             if AOF.left_health > 0:
@@ -682,11 +680,10 @@ while running:
                     AOF.left_health = 0
                 AOF.P1.Dead = True
                 pygame.mixer.Channel(4).set_volume(0.05)
-                pygame.mixer.Channel(4).play(pygame.mixer.Sound('fight_sounds\sword-slide-fight.wav'))
+                pygame.mixer.Channel(4).play(pygame.mixer.Sound('fight_sounds/sword-slide-fight.wav'))
                 pygame.mixer.music.pause()
                 pygame.mixer.Channel(5).set_volume(0.03)
-                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds\medieval-fanfare.mp3'))
-         
+                pygame.mixer.Channel(5).play(pygame.mixer.Sound('fight_sounds/medieval-fanfare.mp3'))
         if P2_Collision == False:
             P2_Spear.draw()
             if AOF.P2.weapon_frame < AOF.P2.weapon_frameCount - 2:
@@ -698,6 +695,6 @@ while running:
 
     tick += 1
 
-    pygame.display.update()
+    pygame.display.flip()
 
 ###################################################################################################
