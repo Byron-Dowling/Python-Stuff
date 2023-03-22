@@ -54,6 +54,10 @@ characterSprite = {
          "Blood": {
             "imagePath": "",
             "frameCount": 0
+        },
+           "bloodSplatter": {
+            "imagePath": "",
+            "frameCount": 0
         }
     }
 }
@@ -89,6 +93,8 @@ class PlayerSelector:
             characterSprite["Action"]["Weapon"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Weapon"]["imagePath"]))
             characterSprite["Action"]["Blood"]["imagePath"] = fr'Sprites\{self.characters[i]}\Blood'
             characterSprite["Action"]["Blood"]["frameCount"] = len(os.listdir(characterSprite["Action"]["Blood"]["imagePath"]))
+            characterSprite["Action"]["bloodSplatter"]["imagePath"] = fr'Sprites\{self.characters[i]}\bloodSplatter'
+            characterSprite["Action"]["bloodSplatter"]["frameCount"] = len(os.listdir(characterSprite["Action"]["bloodSplatter"]["imagePath"]))
             self.characterSprites.append(copy.deepcopy(characterSprite))
 
     def sanityCheck(self):
