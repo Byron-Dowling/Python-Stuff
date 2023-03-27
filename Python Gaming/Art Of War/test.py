@@ -415,6 +415,7 @@ while running:
                 # Reset the game
                 AOFW.resetGame()
                 utilities.background_music() 
+                
     if AOFW.right_health <= 0 or AOFW.left_health <= 0:
             # Draw the reset button and wait for the player to click it
             pygame.draw.rect(screen, (255, 0, 0), button_rect)
