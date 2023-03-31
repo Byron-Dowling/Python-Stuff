@@ -1,8 +1,17 @@
+"""
+    Name:  Byron Dowling
+    Class: 5443 2D Python Gaming
+
+    Description:
+        - Program is used to crop and derive the sprites from a single
+          sprite sheet into multiple individual images.
+"""
+
 from PIL import Image
 from os import mkdir
 
-#mkdir("Assets/Background/BigStar2")
-sheet = Image.open("Assets/Background/BigStar2.png")
+#mkdir("Assets/Sprites/Spaceships/Thrust")
+sheet = Image.open("Assets\Background\Thrusting.png")
 count = 0
 
 width, height = sheet.size
@@ -10,16 +19,16 @@ width, height = sheet.size
 ## Height: 360 Width = 5760
 print(f'Height: {height}, Width: {width}')
 
-strideLength = width/9
+strideLength = width/4
 
-left = 475
+left = 0
 right = strideLength
-top = 175
-bottom = height - 20
+top = 30
+bottom = height
 
-for x in range(9):
+for x in range(4):
     icon = sheet.crop((left, top, right, bottom))
-    icon.save("Assets/Background/BigStar2/{}.png".format(count))
+    icon.save("Assets/Sprites/Spaceships/Thrust/{}.png".format(count))
     count += 1
-    left += strideLength
     right = right + strideLength
+    left += strideLength
