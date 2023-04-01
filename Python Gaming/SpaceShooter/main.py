@@ -19,6 +19,7 @@ import pprint
 import copy
 import os
 from PIL import Image, ImageDraw
+from random import shuffle
 import utilities
 
 ###################################################################################################
@@ -121,17 +122,40 @@ class Spaceship:
     def __init__(self):
         self.Idle = True
         self.Thrust = False
+        self.Shields = False
         self.Idle_Frames = len(os.listdir("Assets\Sprites\Spaceships\Ship_Idle"))
         self.Idle_Frame = 0
         self.Thrust_Frames = len(os.listdir("Assets\Sprites\Spaceships\Thrust"))
         self.Thrust_Frame = 0
+        self.Engine_Idle_Frames = len(os.listdir("Assets\Sprites\Spaceships\Idle"))
+        self.Engine_Idle_Frame = 0
+        self.Shield_Frames = len(os.listdir("Assets\Sprites\Shields"))
+        self.Shield_Frame = 0
+        self.Locations = [(150,350),(600,600),(1000,500),(1500,500),(1600,700),(900,700),(1500,120),(150,150)]
+        self.startingPoint = self.randomLocationSpawn()
+        self._Xcord = self.startingPoint[0]
+        self._Ycord = self.startingPoint[1]
 
     def updateFrames(self):
         if self.Idle_Frame < self.Idle_Frames - 1:
             self.Idle_Frame += 1
         else:
             self.Idle_Frame = 0
+        if self.Engine_Idle_Frame < self.Engine_Idle_Frames - 1:
+            self.Engine_Idle_Frame += 1
+        else:
+            self.Engine_Idle_Frame = 0
+        if self.Shield_Frame < self.Shield_Frames - 1:
+            self.Shield_Frame += 1
+        else:
+            self.Shield_Frame = 0
 
+    def randomLocationSpawn(self):
+        shuffle(self.Locations)
+        selection = []
+        selection.append(self.Locations[0])
+        print(selection[0])
+        return selection[0]
 
 ###################################################################################################
 """ 
@@ -162,8 +186,7 @@ class GameController:
         self.BH_Frames = len(os.listdir("Assets/Background/BH"))
         self.BH_Frame = 0
         self.Default_Smoothscale_Dimensions = (200,200)
-        self.FORWARD_ACCELEARATION = 50
-
+        self.FORWARD_ACCELEARATION = 20
 
     def getScreenSize(self):
         dimensions = (self.screenWidth, self.screenHeight)
@@ -185,7 +208,6 @@ class GameController:
         else:
             self.BH_Frame = 0
         
-
 ###################################################################################################
 """
   ██████╗  █████╗ ███╗   ███╗███████╗                                
@@ -213,12 +235,9 @@ screenHeight = 900
 GC = GameController(screenWidth, screenHeight)
 screen = pygame.display.set_mode((GC.screenWidth, GC.screenHeight))
 
-screen.fill((0,0,0))
-
 tick = 0
 
 Player1 = Spaceship()
-
 
 
 ###################################################################################################
@@ -236,6 +255,24 @@ while GC.Running:
         if event.type == pygame.QUIT:
             GC.Running = False
 
+    keys = pygame.key.get_pressed()
+
+    ## Player key controls
+    if keys[pygame.K_LEFT]:
+        pass
+    if keys[pygame.K_RIGHT]:
+        pass
+    if keys[pygame.K_UP]:
+        Player1.Thrust = True
+        Player1._Ycord -= 20
+    if keys[pygame.K_DOWN]:
+        Player1._Ycord += 20
+    if keys[pygame.K_RSHIFT]:
+        if Player1.Shields==False:
+            Player1.Shields=True
+
+    screen.fill((0,0,0))
+
     ## Background shit
     StarryBackground = Background(f"Assets/Background/Stars/{GC.BG_Frame}.png", [0, 0], (screenWidth, screenHeight))
     screen.blit(StarryBackground.image, StarryBackground.rect)
@@ -248,19 +285,36 @@ while GC.Running:
 
     Blackhole = Background(f'Assets/Background/BH/{GC.BH_Frame}.png', [815,350], (150,150))
     screen.blit(Blackhole.image, Blackhole.rect)
+    
+    Ship = GameSprite('Spaceship_Weaponized.png', [Player1._Xcord,Player1._Ycord], (75,75))
 
-    if Player1.Idle:
-        Ship_Link = fr'Assets\Sprites\Spaceships\Ship_Idle\{Player1.Idle_Frame}.png'
-        Ship = GameSprite(Ship_Link, [714,320], (50,50))
+    if Player1.Thrust == True:
+        Ship_Effect = GameSprite(fr"Assets\Sprites\Spaceships\Idle\0.png", [Player1._Xcord,Player1._Ycord + 40], (25,10))
         Ship.draw()
+        Ship_Effect.draw()
 
+    else:
+        if Player1.Shields == True:
+            Ship_Effect = GameSprite(f"Assets\Sprites\Spaceships\Idle\{Player1.Engine_Idle_Frame}.png", [Player1._Xcord,Player1._Ycord + 40], (25,10))
+            Shield = GameSprite(f"Assets\Sprites\Shields\{Player1.Shield_Frame}.png", [Player1._Xcord,Player1._Ycord], (115,115))
+            Ship.draw()
+            Ship_Effect.draw()
+            Shield.draw()
 
+        else:
+            Ship_Effect = GameSprite(f"Assets\Sprites\Spaceships\Idle\{Player1.Engine_Idle_Frame}.png", [Player1._Xcord,Player1._Ycord + 40], (25,10))
+            Ship.draw()
+            Ship_Effect.draw()
 
     if tick % 3 == 0:
         GC.updateFrames()
     if tick % 4 == 0:
         Player1.updateFrames()
 
+
+    ## Reset thrusters and shields so the key must be held down
+    Player1.Thrust = False
+    Player1.Shields = False
     tick += 1
-    pygame.display.update()
+    pygame.display.flip()
 ###################################################################################################
