@@ -1,14 +1,15 @@
 import random
-
+import pygame
 from pygame import Color
 from pygame.image import load
 from pygame.math import Vector2
 from pygame.mixer import Sound
 
 
-def load_sprite(name, with_alpha=True):
-    path = f"Assets/Sprites/{name}.png"
-    loaded_sprite = load(path)
+def load_sprite(imageLink, smsc, with_alpha=True):
+    loaded_sprite = load(imageLink)
+
+    loaded_sprite = pygame.transform.smoothscale(loaded_sprite, smsc)
 
     if with_alpha:
         return loaded_sprite.convert_alpha()
