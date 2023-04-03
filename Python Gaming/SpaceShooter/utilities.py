@@ -15,7 +15,13 @@ def load_sprite(imageLink, smsc, with_alpha=True):
         return loaded_sprite.convert_alpha()
     else:
         return loaded_sprite.convert()
+    
+def rotate_sprite(imageLink, smsc, angle):
+    loaded_sprite = load(imageLink)
+    loaded_sprite = pygame.transform.smoothscale(loaded_sprite, smsc)
+    loaded_sprite = pygame.transform.rotate(loaded_sprite, angle)    
 
+    return loaded_sprite.convert()
 
 def load_sound(name):
     path = f"Assets/Sounds/{name}.wav"
