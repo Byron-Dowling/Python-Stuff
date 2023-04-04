@@ -22,7 +22,7 @@ import os
 from PIL import Image, ImageDraw
 from random import shuffle
 from pygame.math import Vector2
-from utilities import rotate_sprite, load_sprite, wrap_position
+from utilities import load_sprite, load_sprite_rotated, wrap_position
 import utilities
 
 
@@ -154,6 +154,7 @@ class Spaceship(GameSprite):
         self.ShipSmoothscale = smsc
         self.MANEUVERABILITY = 3
         self.ACCELERATION = 0.25
+        self.ANGLE = 0
         self.direction = Vector2(UP)
         self.Idle_Frames = len(os.listdir("Assets\Sprites\Spaceships\Idle"))
         self.Idle_Frame = 0
@@ -162,14 +163,14 @@ class Spaceship(GameSprite):
                                    (1600,700),(900,700),(1500,120),(150,150)]
         self.currentPosition = self.randomLocationSpawn()
         self.SpaceshipShields = Shields(self.currentPosition)
-        self.spriteObject = load_sprite(self.ImageLink, self.ShipSmoothscale)
+        self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
 
         GameSprite.__init__(self, self.currentPosition, self.spriteObject, Vector2(0))
 
     def rotate(self, clockwise=True):
         sign = 1 if clockwise else -1
-        angle = self.MANEUVERABILITY * sign
-        self.direction.rotate_ip(angle)
+        self.ANGLE += self.MANEUVERABILITY * sign
+        self.direction.rotate_ip(self.ANGLE)
 
         """ 
             Need to rotate image 
@@ -177,11 +178,11 @@ class Spaceship(GameSprite):
                 This isn't quite working yet
         """
         if clockwise:
-            self.spriteObject = rotate_sprite(self.ImageLink, 
-                                self.ShipSmoothscale, angle)
+            self.spriteObject = load_sprite_rotated(self.ImageLink, 
+                                self.ShipSmoothscale, self.ANGLE)
         else:
-            self.spriteObject = rotate_sprite(self.ImageLink, 
-                            self.ShipSmoothscale, angle)
+            self.spriteObject = load_sprite_rotated(self.ImageLink, 
+                            self.ShipSmoothscale, self.ANGLE)
             
         self.sprite = self.spriteObject
 
@@ -204,11 +205,11 @@ class Spaceship(GameSprite):
     def updateSpaceshipSpriteImage(self):
         if self.Idle:
             self.ImageLink = f'Assets\Sprites\Spaceships\Idle\{self.Idle_Frame}.png'
-            self.spriteObject = load_sprite(self.ImageLink, self.ShipSmoothscale)
+            self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
 
         elif self.Thrust:
             self.ImageLink = r'Assets\Sprites\Spaceships\Idle\1.png'
-            self.spriteObject = load_sprite(self.ImageLink, self.ShipSmoothscale)
+            self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
 
         ## Invoking the gamesprite member variable
         self.sprite = self.spriteObject
@@ -423,10 +424,8 @@ while GC.Running:
             ## Player key controls
             if event.key == pygame.K_LEFT:
                 Player1_Spaceship.RotateLeft = False
-                Player1_Spaceship.direction = Vector2(UP)
             elif event.key == pygame.K_RIGHT:
                 Player1_Spaceship.RotateRight = False
-                Player1_Spaceship.direction = Vector2(UP)
             elif event.key == pygame.K_UP:
                 Player1_Spaceship.Thrust = False
             elif event.key == pygame.K_RSHIFT:

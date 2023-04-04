@@ -8,20 +8,23 @@ from pygame.mixer import Sound
 
 def load_sprite(imageLink, smsc, with_alpha=True):
     loaded_sprite = load(imageLink)
-
     loaded_sprite = pygame.transform.smoothscale(loaded_sprite, smsc)
-
+   
     if with_alpha:
         return loaded_sprite.convert_alpha()
     else:
         return loaded_sprite.convert()
     
-def rotate_sprite(imageLink, smsc, angle):
+def load_sprite_rotated(imageLink, smsc, angle, with_alpha=True):
     loaded_sprite = load(imageLink)
     loaded_sprite = pygame.transform.smoothscale(loaded_sprite, smsc)
-    loaded_sprite = pygame.transform.rotate(loaded_sprite, angle)    
+    loaded_sprite = pygame.transform.rotate(loaded_sprite, angle)  
+    
+    if with_alpha:
+        return loaded_sprite.convert_alpha()
+    else:
+        return loaded_sprite.convert()
 
-    return loaded_sprite.convert()
 
 def load_sound(name):
     path = f"Assets/Sounds/{name}.wav"
