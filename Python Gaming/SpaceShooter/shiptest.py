@@ -67,6 +67,113 @@ class Background(pygame.sprite.Sprite):
 
 ###################################################################################################
 """
+  ██████╗  █████╗ ███╗   ███╗███████╗        
+ ██╔════╝ ██╔══██╗████╗ ████║██╔════╝        
+ ██║  ███╗███████║██╔████╔██║█████╗          
+ ██║   ██║██╔══██║██║╚██╔╝██║██╔══╝          
+ ╚██████╔╝██║  ██║██║ ╚═╝ ██║███████╗        
+  ╚═════╝ ╚═╝  ╚═╝╚═╝     ╚═╝╚══════╝        
+                                             
+ ███████╗██████╗ ██████╗ ██╗████████╗███████╗
+ ██╔════╝██╔══██╗██╔══██╗██║╚══██╔══╝██╔════╝
+ ███████╗██████╔╝██████╔╝██║   ██║   █████╗  
+ ╚════██║██╔═══╝ ██╔══██╗██║   ██║   ██╔══╝  
+ ███████║██║     ██║  ██║██║   ██║   ███████╗
+ ╚══════╝╚═╝     ╚═╝  ╚═╝╚═╝   ╚═╝   ╚══════╝
+
+"""
+class GameSprite:
+    def __init__(self, position, sprite, velocity):
+        self.position = Vector2(position)
+        self.sprite = sprite
+        self.radius = sprite.get_width() / 2
+        self.velocity = Vector2(velocity)
+
+    def draw(self, surface):
+        blit_position = self.position - Vector2(self.radius)
+        surface.blit(self.sprite, blit_position)
+
+    def move(self, surface):
+        self.position = wrap_position(self.position + self.velocity, surface)
+
+    def collides_with(self, other_obj):
+        distance = self.position.distance_to(other_obj.position)
+        return distance < self.radius + other_obj.radius
+
+###################################################################################################
+""" 
+ ███╗   ███╗██╗███████╗███████╗██╗██╗     ███████╗███████╗
+ ████╗ ████║██║██╔════╝██╔════╝██║██║     ██╔════╝██╔════╝
+ ██╔████╔██║██║███████╗███████╗██║██║     █████╗  ███████╗
+ ██║╚██╔╝██║██║╚════██║╚════██║██║██║     ██╔══╝  ╚════██║
+ ██║ ╚═╝ ██║██║███████║███████║██║███████╗███████╗███████║
+ ╚═╝     ╚═╝╚═╝╚══════╝╚══════╝╚═╝╚══════╝╚══════╝╚══════╝
+                                                          
+"""
+
+class Missiles(GameSprite):
+    def __init__(self, location):
+        self.Missile_Frames = len(os.listdir("Assets\Sprites\Weapons"))
+        self.Missile_Frame = 0
+        self.Location = location
+        self.FiringInProgress = False
+        self.Smoothscale = (100,100)
+        self.imageLink = f'Assets\Sprites\Weapons\{self.Missile_Frame}.png'
+
+        self.spriteObject = load_sprite_rotated(self.imageLink, self.Smoothscale, 0)
+
+        super().__init__(self.Location, self.spriteObject, Vector2(0))
+
+    def updateFrames(self):
+        if self.Missile_Frame < self.Missile_Frames - 1:
+            self.Missile_Frame += 1
+            self.imageLink = f'Assets\Sprites\Weapons\{self.Missile_Frame}.png'
+            self.spriteObject = load_sprite(self.imageLink, self.Smoothscale)
+            self.sprite = self.spriteObject
+        else:
+            self.Missile_Frame = 0
+            self.imageLink = f'Assets\Sprites\Weapons\{self.Missile_Frame}.png'
+            self.spriteObject = load_sprite(self.imageLink, self.Smoothscale)
+            self.sprite = self.spriteObject
+            self.FiringInProgress = False
+
+###################################################################################################
+""" 
+ ███████╗██╗  ██╗██╗███████╗██╗     ██████╗ ███████╗
+ ██╔════╝██║  ██║██║██╔════╝██║     ██╔══██╗██╔════╝
+ ███████╗███████║██║█████╗  ██║     ██║  ██║███████╗
+ ╚════██║██╔══██║██║██╔══╝  ██║     ██║  ██║╚════██║
+ ███████║██║  ██║██║███████╗███████╗██████╔╝███████║
+ ╚══════╝╚═╝  ╚═╝╚═╝╚══════╝╚══════╝╚═════╝ ╚══════╝
+                                                    
+"""
+class Shields(GameSprite):
+    def __init__(self, location):
+        self.Shield_Frames = len(os.listdir("Assets\Sprites\Shields"))
+        self.Shield_Frame = 0
+        self.Location = location
+        self.Smoothscale = (170,170)
+        self.imageLink = f'Assets\Sprites\Shields\{self.Shield_Frame}.png'
+
+        self.spriteObject = load_sprite_rotated(self.imageLink, self.Smoothscale, 0)
+
+        super().__init__(self.Location, self.spriteObject, Vector2(0))
+
+    def updateFrames(self):
+        if self.Shield_Frame < self.Shield_Frames - 1:
+            self.Shield_Frame += 1
+            self.imageLink = f'Assets\Sprites\Shields\{self.Shield_Frame}.png'
+            self.spriteObject = load_sprite(self.imageLink, self.Smoothscale)
+            self.sprite = self.spriteObject
+        else:
+            self.Shield_Frame = 0
+            self.imageLink = f'Assets\Sprites\Shields\{self.Shield_Frame}.png'
+            self.spriteObject = load_sprite(self.imageLink, self.Smoothscale)
+            self.sprite = self.spriteObject
+
+
+###################################################################################################
+"""
  ███████╗██████╗  █████╗  ██████╗███████╗███████╗██╗  ██╗██╗██████╗ 
  ██╔════╝██╔══██╗██╔══██╗██╔════╝██╔════╝██╔════╝██║  ██║██║██╔══██╗
  ███████╗██████╔╝███████║██║     █████╗  ███████╗███████║██║██████╔╝
@@ -75,37 +182,44 @@ class Background(pygame.sprite.Sprite):
  ╚══════╝╚═╝     ╚═╝  ╚═╝ ╚═════╝╚══════╝╚══════╝╚═╝  ╚═╝╚═╝╚═╝     
                                                                     
 """
-class Spaceship:
+class Spaceship(GameSprite):
     def __init__(self, smsc):
         self.Idle = True
         self.Thrust = False
         self.Shields = False
         self.RotateLeft = False
         self.RotateRight = False
+        self.Firing = False
         self.ShipSmoothscale = smsc
-        self.MANEUVERABILITY = 3
-        self.ACCELERATION = 0.25
-        self.MAX_VELOCITY = 10
+        self.MANEUVERABILITY = 6
+        self.ACCELERATION = 0.30
+        self.MAX_VELOCITY = 20
         self.ANGLE = 0
-        self.direction = 90
+        self.direction = Vector2(UP)
         self.Idle_Frames = len(os.listdir("Assets\Sprites\Spaceships\Idle"))
         self.Idle_Frame = 0
         self.ImageLink = f'Assets\Sprites\Spaceships\Idle\{self.Idle_Frame}.png'
         self.ShipSpawnLocations = [(150,350),(600,600),(1000,500),(1500,500),
                                    (1600,700),(900,700),(1500,120),(150,150)]
         self.currentPosition = self.randomLocationSpawn()
-        self.rect = self.ImageLink.get_rect(center=self.currentPosition)
+        self.SpaceshipShields = Shields(self.currentPosition)
+        self.SpaceshipMissiles = Missiles(self.currentPosition)
+        self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
 
+        GameSprite.__init__(self, self.currentPosition, self.spriteObject, Vector2(0))
 
-    def calculate_new_xy(self, old_xy, speed, angle_in_degrees):
-        move_vec = pygame.math.Vector2()
-        move_vec.from_polar((speed, angle_in_degrees))
-        return old_xy + move_vec
-    
-    def update(self):
-        self.currentPosition = self.calculate_new_xy(self.currentPosition, 
-                                                     self.MAX_VELOCITY, -self.direction)
-        self.rect.center = round(self.pos[0]), round(self.pos[1])
+    ## Modified Unit Circle Trig Math
+    def getUnitCircleQuadrant(self):
+        if self.ANGLE >= 0 and self.ANGLE <= 90:
+            ## Where X is negative and Y is negative
+            self.direction[0] = self.direction[0] * -1
+            self.direction[1] = self.direction[1] * -1
+        elif self.ANGLE > 90 and self.ANGLE <= 180:
+            ## Where X is negative and Y is positve
+            self.direction[0] = self.direction[0] * -1
+        elif self.ANGLE > 270 and self.ANGLE <= 359:
+            ## Where X is positive and Y is negative
+            self.direction[1] = self.direction[1] * -1
 
 
     def rotate(self, clockwise=True):
@@ -117,7 +231,41 @@ class Spaceship:
         elif self.ANGLE < 0:
             self.ANGLE += 360
 
-        self.update()
+        ## Rotate by degrees in-place
+        self.direction.rotate_ip(self.ANGLE)
+
+        self.direction[0] = abs(self.direction[0])
+        self.direction[1] = abs(self.direction[1])
+
+        self.getUnitCircleQuadrant()
+
+        """
+            velocity is the padding on the position that moves the ship
+        """
+        self.velocity = self.direction * self.ACCELERATION
+
+        if clockwise:
+            self.spriteObject = load_sprite_rotated(self.ImageLink, 
+                                self.ShipSmoothscale, self.ANGLE)
+            self.SpaceshipMissiles.spriteObject = load_sprite_rotated(self.SpaceshipMissiles.imageLink, 
+                                        self.SpaceshipMissiles.Smoothscale, self.ANGLE)
+            self.SpaceshipShields.spriteObject = load_sprite_rotated(self.SpaceshipShields.imageLink,
+                                        self.SpaceshipShields.Smoothscale, self.ANGLE)
+        else:
+            self.spriteObject = load_sprite_rotated(self.ImageLink, 
+                            self.ShipSmoothscale, self.ANGLE)
+            self.SpaceshipMissiles.spriteObject = load_sprite_rotated(self.SpaceshipMissiles.imageLink, 
+                                        self.SpaceshipMissiles.Smoothscale, self.ANGLE)
+            self.SpaceshipShields.spriteObject = load_sprite_rotated(self.SpaceshipShields.imageLink,
+                                        self.SpaceshipShields.Smoothscale, self.ANGLE)
+            
+        self.sprite = self.spriteObject
+        self.SpaceshipMissiles.sprite = self.SpaceshipMissiles.spriteObject
+        self.SpaceshipShields.sprite = self.SpaceshipShields.spriteObject
+
+    def accelerate(self):
+        if self.velocity.length() < self.MAX_VELOCITY:
+            self.velocity += self.direction * self.ACCELERATION
 
     def randomLocationSpawn(self):
         shuffle(self.ShipSpawnLocations)
@@ -131,6 +279,24 @@ class Spaceship:
             self.Idle_Frame += 1
         else:
             self.Idle_Frame = 0
+
+    def updateSpaceshipSpriteImage(self):
+        if self.Idle:
+            self.ImageLink = f'Assets\Sprites\Spaceships\Idle\{self.Idle_Frame}.png'
+            self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
+
+        elif self.Thrust:
+            self.ImageLink = r'Assets\Sprites\Spaceships\Idle\1.png'
+            self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
+
+        ## Invoking the gamesprite member variable
+        self.sprite = self.spriteObject
+
+    def updateSpaceshipLocation(self):
+        self.currentPosition = self.position
+        self.SpaceshipShields.position = self.currentPosition
+        self.SpaceshipMissiles.position = self.currentPosition
+
 
 ###################################################################################################
 """ 
@@ -230,26 +396,6 @@ while GC.Running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             GC.Running = False
-
-        ## Keys being held down
-        elif event.type == pygame.KEYDOWN:
-            ## Player key controls
-            if event.key == pygame.K_LEFT:
-                Player1_Spaceship.RotateLeft = True
-            elif event.key == pygame.K_RIGHT:
-                Player1_Spaceship.RotateRight = True
-            elif event.key == pygame.K_UP:
-                Player1_Spaceship.Thrust = True
-
-        ## Keys being released
-        elif event.type == pygame.KEYUP:
-            ## Player key controls
-            if event.key == pygame.K_LEFT:
-                Player1_Spaceship.RotateLeft = False
-            elif event.key == pygame.K_RIGHT:
-                Player1_Spaceship.RotateRight = False
-            elif event.key == pygame.K_UP:
-                Player1_Spaceship.Thrust = False
                 
     screen.fill((0,0,0))
 
@@ -266,19 +412,33 @@ while GC.Running:
     Blackhole = Background(f'Assets/Background/BH/{GC.BH_Frame}.png', [815,350], (150,150))
     GC.screen.blit(Blackhole.image, Blackhole.rect)
 
-    if Player1_Spaceship.Thrust == True:
-        pass
-    elif Player1_Spaceship.RotateLeft == True:
-        Player1_Spaceship.rotate(clockwise=False)
-    elif Player1_Spaceship.RotateRight == True:
-        Player1_Spaceship.rotate(clockwise=True)
-
     Player1_Spaceship.draw(screen)
+
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        Player1_Spaceship.rotate(clockwise=True)
+    if keys[pygame.K_RIGHT]:
+        Player1_Spaceship.rotate(clockwise=False)
+    if keys[pygame.K_RSHIFT]:
+        if Player1_Spaceship.Shields==False:
+            Player1_Spaceship.Shields=True
+            Player1_Spaceship.SpaceshipShields.updateFrames()
+            Player1_Spaceship.updateSpaceshipLocation()
+            Player1_Spaceship.SpaceshipShields.draw(screen)
+    if keys[pygame.K_UP]:
+        Player1_Spaceship.accelerate()
+        Player1_Spaceship.move(screen)
+        Player1_Spaceship.updateSpaceshipSpriteImage()
+        Player1_Spaceship.updateSpaceshipLocation()
+
 
     if tick % 3 == 0:
         GC.updateFrames()
         Player1_Spaceship.updateFrames()
+        Player1_Spaceship.updateSpaceshipSpriteImage()
 
     tick += 1
+    Player1_Spaceship.Shields=False
+
     pygame.display.flip()
 ###################################################################################################

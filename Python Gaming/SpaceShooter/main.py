@@ -15,15 +15,12 @@
 
 import math
 import pygame
-import pprint
 import random
-import copy
 import os
 from PIL import Image, ImageDraw
 from random import shuffle
 from pygame.math import Vector2
 from utilities import load_sprite, load_sprite_rotated, wrap_position
-import utilities
 
 
 UP = Vector2(0, -1)
@@ -112,17 +109,18 @@ class GameSprite:
 """
 
 class Missiles(GameSprite):
-    def __init__(self, location):
+    def __init__(self, location, bearing):
         self.Missile_Frames = len(os.listdir("Assets\Sprites\Weapons"))
         self.Missile_Frame = 0
         self.Location = location
         self.FiringInProgress = False
         self.Smoothscale = (100,100)
+        self.FiringAngle = bearing
         self.imageLink = f'Assets\Sprites\Weapons\{self.Missile_Frame}.png'
 
         self.spriteObject = load_sprite_rotated(self.imageLink, self.Smoothscale, 0)
 
-        super().__init__(self.Location, self.spriteObject, Vector2(0))
+        super().__init__(self.Location, self.spriteObject, Vector2(self.FiringAngle))
 
     def updateFrames(self):
         if self.Missile_Frame < self.Missile_Frames - 1:
@@ -202,7 +200,7 @@ class Spaceship(GameSprite):
                                    (1600,700),(900,700),(1500,120),(150,150)]
         self.currentPosition = self.randomLocationSpawn()
         self.SpaceshipShields = Shields(self.currentPosition)
-        self.SpaceshipMissiles = Missiles(self.currentPosition)
+        self.SpaceshipMissiles = Missiles(self.currentPosition, self.ANGLE)
         self.spriteObject = load_sprite_rotated(self.ImageLink, self.ShipSmoothscale, self.ANGLE)
 
         GameSprite.__init__(self, self.currentPosition, self.spriteObject, Vector2(0))
@@ -217,6 +215,7 @@ class Spaceship(GameSprite):
             ## Where X is negative and Y is positve
             self.direction[0] = self.direction[0] * -1
         elif self.ANGLE > 270 and self.ANGLE <= 359:
+            ## Where X is positive and Y is negative
             self.direction[1] = self.direction[1] * -1
 
 
@@ -479,60 +478,6 @@ while GC.Running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             GC.Running = False
-
-        ## Keys being held down
-        elif event.type == pygame.KEYDOWN:
-            ## Player key controls
-            if event.key == pygame.K_LEFT:
-                Player1_Spaceship.RotateLeft = True
-            elif event.key == pygame.K_RIGHT:
-                Player1_Spaceship.RotateRight = True
-            elif event.key == pygame.K_UP:
-                Player1_Spaceship.Thrust = True
-                print("Current Direction:", Player1_Spaceship.direction)
-
-            ## Might use this for firing missiles
-            elif event.key == pygame.K_DOWN:
-                if Player1_Spaceship.Firing == False:
-                    Player1_Spaceship.Firing = True
-                    Player1_Spaceship.SpaceshipMissiles.FiringInProgress = True
-                    Player1_Spaceship.SpaceshipMissiles.updateFrames()
-            elif event.key == pygame.K_RSHIFT:
-                if Player1_Spaceship.Shields==False:
-                    Player1_Spaceship.Shields=True
-                    Player1_Spaceship.SpaceshipShields.updateFrames()
-
-        ## Keys being released
-        elif event.type == pygame.KEYUP:
-            ## Player key controls
-            if event.key == pygame.K_LEFT:
-                Player1_Spaceship.RotateLeft = False
-                print("Current Position:", Player1_Spaceship.currentPosition)
-                message = f'Current direction angle after rotate left: {Player1_Spaceship.direction}'
-                print(message)
-                print("Current Velocity", Player1_Spaceship.velocity)
-                print("Current Angle:", Player1_Spaceship.ANGLE)
-                print()
-            elif event.key == pygame.K_RIGHT:
-                Player1_Spaceship.RotateRight = False
-                print("Current Position:", Player1_Spaceship.currentPosition)
-                message = f'Current direction angle after rotate right: {Player1_Spaceship.direction}'
-                print(message)
-                print("Current Velocity", Player1_Spaceship.velocity)
-                print("Current Angle:", Player1_Spaceship.ANGLE)
-                print()
-            elif event.key == pygame.K_UP:
-                Player1_Spaceship.Thrust = False
-                print("Current Position:", Player1_Spaceship.currentPosition)
-                message = f'Current direction angle after acceleration: {Player1_Spaceship.direction}'
-                print(message)
-                print("Current Velocity", Player1_Spaceship.velocity)
-                print("Current Angle:", Player1_Spaceship.ANGLE)
-                print()
-            elif event.key == pygame.K_RSHIFT:
-                if Player1_Spaceship.Shields==True:
-                    Player1_Spaceship.Shields=False
-                    Player1_Spaceship.SpaceshipShields.updateFrames()
                 
     screen.fill((0,0,0))
 
@@ -549,43 +494,46 @@ while GC.Running:
     Blackhole = Background(f'Assets/Background/BH/{GC.BH_Frame}.png', [815,350], (150,150))
     GC.screen.blit(Blackhole.image, Blackhole.rect)
 
-    GC.drawAsteroids()
+    Player1_Spaceship.draw(screen)
 
-
-    if Player1_Spaceship.Thrust == True:
+    keys = pygame.key.get_pressed()
+    if keys[pygame.K_LEFT]:
+        Player1_Spaceship.rotate(clockwise=True)
+    if keys[pygame.K_RIGHT]:
+        Player1_Spaceship.rotate(clockwise=False)
+    if keys[pygame.K_RSHIFT]:
+        if Player1_Spaceship.Shields==False:
+            Player1_Spaceship.Shields=True
+            Player1_Spaceship.SpaceshipShields.updateFrames()
+            Player1_Spaceship.updateSpaceshipLocation()
+            Player1_Spaceship.SpaceshipShields.draw(screen)
+    if keys[pygame.K_UP]:
         Player1_Spaceship.accelerate()
         Player1_Spaceship.move(screen)
         Player1_Spaceship.updateSpaceshipSpriteImage()
         Player1_Spaceship.updateSpaceshipLocation()
-    elif Player1_Spaceship.RotateLeft == True:
-        Player1_Spaceship.rotate(clockwise=True)
-        Player1_Spaceship.updateSpaceshipLocation()
-    elif Player1_Spaceship.RotateRight == True:
-        Player1_Spaceship.rotate(clockwise=False)
-        Player1_Spaceship.updateSpaceshipLocation()
 
-
-    Player1_Spaceship.draw(screen)
-
-    if Player1_Spaceship.Shields == True:
-        Player1_Spaceship.updateSpaceshipLocation()
-        Player1_Spaceship.SpaceshipShields.updateFrames()
-        Player1_Spaceship.SpaceshipShields.draw(screen)
+    if keys[pygame.K_DOWN]:
+        if Player1_Spaceship.Firing == False:
+            Player1_Spaceship.Firing = True
 
     if Player1_Spaceship.Firing == True:
         Player1_Spaceship.updateSpaceshipLocation()
-        Player1_Spaceship.SpaceshipMissiles.updateFrames()
         Player1_Spaceship.SpaceshipMissiles.draw(screen)
+        Player1_Spaceship.SpaceshipMissiles.updateFrames()
 
-        if Player1_Spaceship.SpaceshipMissiles.FiringInProgress == False:
-            Player1_Spaceship.Firing = False
 
     if tick % 3 == 0:
         GC.updateFrames()
         Player1_Spaceship.updateFrames()
         Player1_Spaceship.updateSpaceshipSpriteImage()
-        Player1_Spaceship.SpaceshipShields.updateFrames()
+
+    
+    if Player1_Spaceship.SpaceshipMissiles.FiringInProgress == False:
+        Player1_Spaceship.Firing = False
 
     tick += 1
+    Player1_Spaceship.Shields=False
+
     pygame.display.flip()
 ###################################################################################################
