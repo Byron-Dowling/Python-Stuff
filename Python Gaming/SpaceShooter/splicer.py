@@ -10,8 +10,8 @@
 from PIL import Image
 from os import mkdir
 
-mkdir("Assets/Sprites/Shields")
-sheet = Image.open("Assets\Sprites\Shields.png")
+#mkdir("Assets/Sprites/Shields")
+sheet = Image.open("Assets\Sprites\ProjectileRocket.png")
 count = 0
 
 width, height = sheet.size
@@ -19,16 +19,16 @@ width, height = sheet.size
 ## Height: 360 Width = 5760
 print(f'Height: {height}, Width: {width}')
 
-strideLength = width/12
+strideLength = width/3
 
 left = 0
 right = strideLength
 top = 0
 bottom = height
 
-for x in range(12):
+for x in range(3):
     icon = sheet.crop((left, top, right, bottom))
-    icon.save("Assets/Sprites/Shields/{}.png".format(count))
+    icon.save("Assets/Sprites/Projectile/{}.png".format(count))
     count += 1
     right = right + strideLength
     left += strideLength
