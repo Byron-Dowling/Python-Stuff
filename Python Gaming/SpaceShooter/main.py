@@ -22,7 +22,6 @@ from random import shuffle
 from pygame.math import Vector2
 from utilities import load_sprite, load_sprite_rotated, wrap_position
 
-
 UP = Vector2(0, -1)
 
 ###################################################################################################
@@ -92,8 +91,15 @@ class GameSprite(pygame.sprite.Sprite):
         blit_position = self.position - Vector2(self.radius)
         surface.blit(self.sprite, blit_position)
 
-    def move(self, surface):
-        self.position = wrap_position(self.position + self.velocity, surface)
+    def move(self, surface, missile=False):
+        if not missile:
+            self.position = wrap_position(self.position + self.velocity, surface)
+        else:
+            self.position = (self.position + self.velocity)
+
+    def collides_with(self, other_obj):
+        distance = self.position.distance_to(other_obj.position)
+        return distance < self.radius + other_obj.radius
 
 ###################################################################################################
 """ 
@@ -114,14 +120,13 @@ class Missiles(GameSprite):
         self.FiringInProgress = False
         self.Smoothscale = (100,100)
         self.MISSILESPEED = 50
-        self.MAXVELOCITY = 20
+        self.MAXVELOCITY = 15
         self.direction = direction
         self.FiringAngle = bearing
         self.imageLink = f'Assets\Sprites\Projectile\{self.Missile_Frame}.png'
-
         self.spriteObject = load_sprite_rotated(self.imageLink, self.Smoothscale, self.FiringAngle)
 
-        super().__init__(self.Location, self.spriteObject, Vector2(self.FiringAngle))
+        super().__init__(self.Location, self.spriteObject, Vector2(self.direction))
 
     def updateFrames(self):
         if self.Missile_Frame < self.Missile_Frames - 1:
@@ -291,6 +296,15 @@ class Spaceship(GameSprite):
         self.SpaceshipShields.position = self.currentPosition
 
     def fireMissile(self):
+        ## Rotate by degrees in-place
+        self.direction.rotate_ip(self.ANGLE)
+
+        self.direction[0] = abs(self.direction[0])
+        self.direction[1] = abs(self.direction[1])
+
+        self.getUnitCircleQuadrant()
+
+        self.updateSpaceshipLocation()
         SpaceshipMissile = Missiles(self.currentPosition, self.direction, self.ANGLE)
         return SpaceshipMissile
 
@@ -312,8 +326,8 @@ class Asteroid(GameSprite):
         self.Explosion_Frames = len(os.listdir("Assets\Sprites\Asteroids\Explosion"))
         self.Explosion_Frame = 0
         self.InOrbit = True
+        self.Exploding = False
         self.Smoothscale=smsc_dimensions
-
         self.spriteObject = load_sprite(self.IdleImageLink, self.Smoothscale)
 
         GameSprite.__init__(self, location, self.spriteObject, Vector2(0))
@@ -322,7 +336,15 @@ class Asteroid(GameSprite):
         GameSprite.draw(self, screen)
 
     def destroy(self):
-        pass
+        imageLink = f"Assets\Sprites\Asteroids\Explosion\{self.Explosion_Frame}.png"
+        self.spriteObject = load_sprite(imageLink, self.Smoothscale)
+        self.sprite = self.spriteObject
+
+        if self.Explosion_Frame < self.Explosion_Frames - 1:
+            self.Explosion_Frame += 1
+        else:
+            self.InOrbit = False
+            self.kill()
 
 ###################################################################################################
 """
@@ -349,14 +371,6 @@ def checkForOffscreenMovement(position, surface):
     if x < 0 or x > sw:
         return True
     elif y < 0 or y > sh:
-        return True
-    else:
-        return False
-
-## Mask Collision Detection between Sprites and Projectiles
-def checkForCollision(sprite, projectile):
-    result = pygame.sprite.collide_mask(sprite.playerMain, projectile.playerMain)
-    if result != None:
         return True
     else:
         return False
@@ -395,6 +409,7 @@ class GameController:
         self.Spaceship_Smoothscale = (80,80)
         self.FORWARD_ACCELEARATION = 25
         self.MIN_ASTEROID_DISTANCE = 250
+        self.MISSILE_COOLDOWN_TIME = 0
 
         self.Locations = [(100,150),(300,300),(800,400),(1300,200),
                                    (1100,600),(700,700),(1500,620),(650,450),
@@ -402,7 +417,6 @@ class GameController:
                                    (1700,100),(100,800),(1100,120),(150,1000)]
         self.AsteroidCount = 8
         self.Asteroids = []
-        #self.MissilesInAir = []
         self.MissilesInAir = pygame.sprite.Group()
 
         shuffle(self.Locations)
@@ -480,10 +494,13 @@ while GC.Running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             GC.Running = False
-                
+
+    """
+        Background Layering
+    """
+
     screen.fill((0,0,0))
 
-    ## Background shit
     StarryBackground = Background(f"Assets/Background/Stars/{GC.BG_Frame}.png", [0, 0], (screenWidth, screenHeight))
     GC.screen.blit(StarryBackground.image, StarryBackground.rect)
 
@@ -498,6 +515,11 @@ while GC.Running:
     GC.drawAsteroids()
 
     Player1_Spaceship.draw(screen)
+
+
+    """
+        Key Input / Fire Controls / Ship Movement
+    """
 
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT]:
@@ -519,24 +541,45 @@ while GC.Running:
     if keys[pygame.K_DOWN]:
         if Player1_Spaceship.Firing == False:
             Player1_Spaceship.Firing = True
-
+            Player1_Spaceship.updateSpaceshipLocation()
             projectile = Player1_Spaceship.fireMissile()
-            #GC.MissilesInAir.append(projectile)
             GC.MissilesInAir.add(projectile)
+
+
+    """
+        Handling Game Logic
+    """
 
     if Player1_Spaceship.Firing == True:
         Player1_Spaceship.updateSpaceshipLocation()
         
-        for item in GC.MissilesInAir:
-            item.accelerate()
-            result = checkForOffscreenMovement(item.position, GC.screen)
+    for missile in GC.MissilesInAir:
+        missile.accelerate()
+        result = checkForOffscreenMovement(missile.position, GC.screen)
 
-            if result == False:
-                item.move(GC.screen)
-                item.draw(GC.screen)
-                item.updateFrames()
-            else:
-                item.explode()
+        if result == False:
+            missile.move(GC.screen, True)
+            missile.draw(GC.screen)
+            missile.updateFrames()
+
+            for asteroid in GC.Asteroids:
+                resultCollision = missile.collides_with(asteroid)
+
+                if resultCollision == True:
+                    print("A missile collided with an asteroid!")
+                    asteroid.Exploding = True
+                    missile.explode()
+        else:
+            missile.explode()
+            GC.MissilesInAir.remove(missile)
+
+    
+    for asteroid in GC.Asteroids:
+        if asteroid.InOrbit:
+            if asteroid.Exploding:
+                asteroid.destroy()
+        else:
+            GC.Asteroids.remove(asteroid)
 
 
 
@@ -544,10 +587,13 @@ while GC.Running:
         GC.updateFrames()
         Player1_Spaceship.updateFrames()
         Player1_Spaceship.updateSpaceshipSpriteImage()
+    
+    if GC.MISSILE_COOLDOWN_TIME % 10 == 0:
         Player1_Spaceship.Firing = False
 
 
     tick += 1
+    GC.MISSILE_COOLDOWN_TIME += 1
     Player1_Spaceship.Shields=False
 
     pygame.display.flip()
